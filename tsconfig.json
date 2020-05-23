@@ -20,7 +20,7 @@
       "@entities": ["entities"],
       "@resolvers": ["resolvers"],
       "@utils": ["utils"],
-      "@generator": ["generator"],
+      "@generator": ["generator/graphql"],
       "@interceptors": ["interceptors"]
     }
   },

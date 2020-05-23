@@ -30,11 +30,11 @@ export class UserResolver {
   async signUp(@Args('newUser') newUser: NewUser): Promise<boolean> {
     const userRepository = getMongoRepository(UserEntity)
     const userFound = await userRepository.findOne({
-      username: newUser.username
+      email: newUser.email
     })
 
     if (!!userFound) {
-      throw new ForbiddenError('Username has already been taken!')
+      throw new ForbiddenError('Email has already been registered!')
     }
 
     const hashedPassword = await this.passwordUtils.hashPassword(
@@ -53,22 +53,22 @@ export class UserResolver {
 
   @Mutation()
   async signIn(
-    @Args('username') username: string,
+    @Args('email') email: string,
     @Args('password') password: string
   ): Promise<AuthRespone> {
     const userFound = await getMongoRepository(UserEntity).findOne({
-      username,
+      email,
       isActive: true
     })
     if (!userFound) {
-      throw new AuthenticationError('Username or password is invalid')
+      throw new AuthenticationError('Email or password is invalid')
     }
     const match = await this.passwordUtils.comparePassword(
       password,
       userFound.password
     )
     if (!match) {
-      throw new AuthenticationError('Username or password is invalid')
+      throw new AuthenticationError('Email or password is invalid')
     }
     const accessToken = await this.authService.generateToken(userFound._id)
     return { accessToken }

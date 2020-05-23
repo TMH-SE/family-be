@@ -11,10 +11,6 @@ export class UserEntity {
 
   @Expose()
   @Column()
-  username: string
-
-  @Expose()
-  @Column()
   password: string
 
   @Expose()

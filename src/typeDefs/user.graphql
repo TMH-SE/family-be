@@ -4,14 +4,13 @@ type Query {
 
 type Mutation {
   signUp(newUser: NewUser): Boolean
-  signIn(username: String, password: String): AuthRespone
+  signIn(email: String, password: String): AuthRespone
   signInWithGoogle(token: String): AuthRespone
   signInWithFacebook(facebookAuthData: FacebookAuthData): AuthRespone
 }
 
 type User {
   _id: ID
-  username: String
   password: String
   firstname: String
   lastname: String
@@ -48,7 +47,7 @@ type AuthRespone {
 }
 
 input NewUser {
-  username: String
+  email: String
   password: String
   firstname: String
   lastname: String
