@@ -7,7 +7,7 @@
 .env.production
 
 # graphql generator
-graphql.ts
+graphql.schema.ts
 
 # Logs
 logs
