@@ -4,6 +4,9 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { GraphQLConfiguration, TypeORMConfiguration } from '@config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import * as Resolvers from '@resolvers'
+import * as Utils from '@utils'
+import { APP_INTERCEPTOR } from '@nestjs/core'
+import { LoggingInterceptor } from '@interceptors'
 
 @Module({
   imports: [
@@ -14,6 +17,11 @@ import * as Resolvers from '@resolvers'
       useClass: TypeORMConfiguration
     })
   ],
-  providers: [AuthService, ...Object.values(Resolvers)]
+  providers: [
+    AuthService,
+    ...Object.values(Utils),
+    ...Object.values(Resolvers),
+    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor }
+  ]
 })
 export class AppModule {}

@@ -25,13 +25,17 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
+      "@src": path.resolve(__dirname, 'src'),
       "@auth": path.resolve(__dirname, 'src/auth'),
       "@config": path.resolve(__dirname, 'src/config'),
       "@constants": path.resolve(__dirname, 'src/constants'),
+      "@common": path.resolve(__dirname, 'src/common'),
       "@environment": path.resolve(__dirname, 'src/environment'),
       "@entities": path.resolve(__dirname, 'src/entities'),
       "@resolvers": path.resolve(__dirname, 'src/resolvers'),
-      "@utils": path.resolve(__dirname, 'src/utils')
+      "@utils": path.resolve(__dirname, 'src/utils'),
+      "@generator": path.resolve(__dirname, 'src/generator'),
+      "@interceptors": path.resolve(__dirname, 'src/interceptors')
     }
   },
   plugins: [

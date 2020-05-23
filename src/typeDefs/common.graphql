@@ -1,3 +1,6 @@
+directive @isAuthenticated on FIELD | FIELD_DEFINITION
+directive @isAdmin on FIELD | FIELD_DEFINITION
+
 type Query {
   hello: String
 }
