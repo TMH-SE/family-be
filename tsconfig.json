@@ -5,6 +5,7 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
@@ -20,7 +21,7 @@
       "@entities": ["entities"],
       "@resolvers": ["resolvers"],
       "@utils": ["utils"],
-      "@generator": ["generator/graphql"],
+      "@generator": ["generator/graphql.schema"],
       "@interceptors": ["interceptors"]
     }
   },
