@@ -23,6 +23,8 @@ deployFamilyTest:
      - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
      - chmod 644 ~/.ssh/known_hosts
   script:
+    - echo $DEPLOY_USER
+    - echo $DEPLOY_SERVER
     - rsync -a -e "ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" . $DEPLOY_USER@$DEPLOY_SERVER:/home/${DEPLOY_USER}/services/test-family-be --delete
     - ssh -o "StrictHostKeyChecking=no" $DEPLOY_USER@$DEPLOY_SERVER 'bash scripts/test-family-be.sh'
 
