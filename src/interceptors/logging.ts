@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { Observable, throwError } from 'rxjs'
 import { tap, catchError } from 'rxjs/operators'
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
@@ -18,20 +18,20 @@ export class LoggingInterceptor implements NestInterceptor {
         console.log(
           new Date().toLocaleString(),
           '⛩  ',
-          chalk.hex('#eb2f96').bold(ctx ? ctx.parentType : ''),
+          chalk.magentaBright.bold(ctx ? ctx.parentType : ''),
           '»',
           ctx ? ctx.fieldName : '',
-          chalk.hex('#fff566')(`+${Date.now() - now}ms`)
+          chalk.yellowBright.italic(`+${Date.now() - now}ms`)
         )
       }),
       catchError(err => {
         console.log(
           new Date().toLocaleString(),
           '⛩  ',
-          chalk.bgRedBright(`${chalk.hex('#fff').bold('EXCEPTION:')}`),
+          chalk.bgRedBright(`${chalk.white.bold('EXCEPTION:')}`),
           '»',
           chalk.red(err.message),
-          chalk.hex('#fff566')(`+${Date.now() - now}ms`)
+          chalk.yellowBright.italic(`+${Date.now() - now}ms`)
         )
         return throwError(err)
       })

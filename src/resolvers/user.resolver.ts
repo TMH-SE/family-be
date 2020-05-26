@@ -10,7 +10,6 @@ import { UserEntity } from '@entities'
 import { PasswordUtils, Mailer } from '@utils'
 import { FB_GRAPH_API_HOST, FB_GRAPH_API_VER } from '@constants'
 import { GOOGLE_CLIENT_ID } from '@environment'
-import { TemplateEmail } from '@common'
 // import { FB_APP_ID, FB_APP_SECRET } from '@environment'
 
 @Resolver('User')
@@ -80,8 +79,6 @@ export class UserResolver {
   ): Promise<AuthRespone> {
     const userRepository = getMongoRepository(UserEntity)
     const FB_GRAPH_API_URL = `${FB_GRAPH_API_HOST}/${FB_GRAPH_API_VER}`
-    // const dataToken = await Axios.get(`${FB_GRAPH_API_HOST}/oauth/access_token?client_id=${FB_APP_ID}&client_secret=${FB_APP_SECRET}&grant_type=client_credentials`)
-    // const checkToken = await Axios.get(`${FB_GRAPH_API_HOST}/v7.0/debug_token?input_token=${token}&access_token=${dataToken.data.access_token}`)
     const req = await Axios.get(
       `${FB_GRAPH_API_URL}/${facebookAuthData.userID}?fields=name,first_name,last_name,birthday,email,gender,link,picture&access_token=${facebookAuthData.accessToken}`
     )
@@ -112,13 +109,6 @@ export class UserResolver {
 
   @Mutation()
   async signInWithGoogle(@Args('token') token: string): Promise<AuthRespone> {
-    const password = await this.passwordUtils.generatePassword(12)
-    this.mailer.sendMail(
-      TemplateEmail.GENERATE_PASSWORD,
-      'MẬT KHẨU ĐĂNG NHẬP',
-      ['hieuhutieu98@gmail.com'],
-      { password, link: '#' }
-    )
     const userRepository = getMongoRepository(UserEntity)
     const client = new OAuth2Client(GOOGLE_CLIENT_ID)
     const authRespone = await client.verifyIdToken({
