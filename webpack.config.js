@@ -34,7 +34,7 @@ module.exports = {
       "@entities": path.resolve(__dirname, 'src/entities'),
       "@resolvers": path.resolve(__dirname, 'src/resolvers'),
       "@utils": path.resolve(__dirname, 'src/utils'),
-      "@generator": path.resolve(__dirname, 'src/generator'),
+      "@generator": path.resolve(__dirname, 'src/generator/graphql.schema'),
       "@interceptors": path.resolve(__dirname, 'src/interceptors')
     }
   },
