@@ -11,13 +11,17 @@
     "baseUrl": "./src",
     "incremental": true,
     "paths": {
+      "@src/*": ["/*"],
       "@auth": ["auth"],
       "@config": ["config"],
       "@constants": ["constants"],
+      "@common": ["common"],
       "@environment": ["environment"],
       "@entities": ["entities"],
       "@resolvers": ["resolvers"],
-      "@utils": ["utils"]
+      "@utils": ["utils"],
+      "@generator": ["generator/graphql"],
+      "@interceptors": ["interceptors"]
     }
   },
   "exclude": ["node_modules", "dist"]

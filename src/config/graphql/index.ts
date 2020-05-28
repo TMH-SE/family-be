@@ -7,13 +7,12 @@ import { ENDPOINT } from '@environment'
 const pubSub = new PubSub()
 
 export class GraphQLConfiguration implements GqlOptionsFactory {
-  constructor(private readonly authService: AuthService) {}
+  private authService = new AuthService()
 
   async createGqlOptions(): Promise<GqlModuleOptions> {
     const directiveResolvers = {
       isAuthenticated: (next, source, args, ctx) => {
         const { currentUser } = ctx
-
         if (!currentUser) {
           throw new AuthenticationError('Missing or invalid token!')
         }
@@ -41,7 +40,8 @@ export class GraphQLConfiguration implements GqlOptionsFactory {
             pubSub
           }
         }
-        const { token } = req.headers
+        const token = req.headers['access-token']
+
         let ctx = {}
         if (token) {
           ctx = await this.authService.verifyToken(token)

@@ -1,0 +1,69 @@
+type Query {
+  me: User @isAuthenticated
+}
+
+type Mutation {
+  signUp(newUser: NewUser): Boolean
+  signIn(email: String, password: String): AuthRespone
+  signInWithGoogle(token: String): AuthRespone
+  signInWithFacebook(facebookAuthData: FacebookAuthData): AuthRespone
+}
+
+type User {
+  _id: ID
+  password: String
+  firstname: String
+  lastname: String
+  avatar: String
+  coverPhoto: String
+  email: String
+  gender: Gender
+  phoneNumber: String
+  birthday: Float
+  expert: Expert
+  isActive: Boolean
+  createdAt: Float
+  updatedAt: Float
+  updatedBy: ID
+  deletedAt: Float
+  deletedBy: ID
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  ORTHER
+}
+
+type Expert {
+  areasOfExpertise: String
+  jobTitle: String
+  yearsExperience: Int
+  isVerify: Boolean
+}
+
+type AuthRespone {
+  accessToken: String
+}
+
+input NewUser {
+  email: String
+  password: String
+  firstname: String
+  lastname: String
+  gender: Gender
+  birthday: Float
+  expert: NewExpert
+}
+
+input NewExpert {
+  areasOfExpertise: String
+  jobTitle: String
+  yearsExperience: Int
+  isVerify: Boolean
+}
+
+input FacebookAuthData {
+  accessToken: String
+  userID: String
+}

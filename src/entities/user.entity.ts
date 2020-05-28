@@ -1,6 +1,7 @@
 import { Entity, ObjectIdColumn, Column } from 'typeorm'
 import { Expose, plainToClass } from 'class-transformer'
 import * as uuid from 'uuid'
+import { Expert } from '@generator'
 
 @Entity('users')
 export class UserEntity {
@@ -10,11 +11,39 @@ export class UserEntity {
 
   @Expose()
   @Column()
-  username: string
+  password: string
 
   @Expose()
   @Column()
-  password: string
+  firstname: string
+
+  @Expose()
+  @Column()
+  lastname: string
+
+  @Expose()
+  @Column()
+  email: string
+
+  @Expose()
+  @Column()
+  gender: string
+
+  @Expose()
+  @Column()
+  phoneNumber: string
+
+  @Expose()
+  @Column()
+  birthday: number
+
+  @Expose()
+  @Column()
+  avatar: string
+
+  @Expose()
+  @Column()
+  expert: Expert
 
   @Expose()
   @Column()
@@ -26,23 +55,32 @@ export class UserEntity {
 
   @Expose()
   @Column()
+  updatedBy: string
+
+  @Expose()
+  @Column()
   deletedAt: number
+
+  @Expose()
+  @Column()
+  deletedBy: string
 
   @Expose()
   @Column()
   isActive: boolean
 
-  constructor(account: Partial<UserEntity>) {
-		if (account) {
+  constructor(user: Partial<UserEntity>) {
+		if (user) {
 			Object.assign(
 				this,
-				plainToClass(UserEntity, account, {
+				plainToClass(UserEntity, user, {
 					excludeExtraneousValues: true
 				})
 			)
 			this._id = this._id || uuid.v1()
-			this.createdAt = this.createdAt || +new Date()
-			this.updatedAt = +new Date()
+			this.createdAt = +new Date()
+      this.updatedAt = +new Date()
+      this.isActive = this.isActive === undefined ? true : this.isActive
 		}
 	}
 
