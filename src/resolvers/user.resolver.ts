@@ -5,7 +5,7 @@ import { getMongoRepository } from 'typeorm'
 import Axios from 'axios'
 import { OAuth2Client } from 'google-auth-library'
 import { AuthService } from '@auth'
-import { NewUser, AuthRespone, FacebookAuthData } from '@generator'
+import { NewUser, AuthRespone, FacebookAuthData, EditUser } from '@generator'
 import { UserEntity } from '@entities'
 import { PasswordUtils, Mailer } from '@utils'
 import { FB_GRAPH_API_HOST, FB_GRAPH_API_VER } from '@constants'
@@ -136,5 +136,23 @@ export class UserResolver {
         return { accessToken }
       }
     }
+  }
+  @Query()
+  async getUser(@Args('userId') userId: string): Promise<UserEntity>{
+    const userRepository = getMongoRepository(UserEntity)
+    const userFound = await userRepository.findOne({ _id: userId })
+    console.log(userFound)
+    return userFound
+  }
+  @Mutation()
+  async updateUser(@Args('userId') userId: string,
+  @Args('editUser') editUser: EditUser){
+    const userRepository = getMongoRepository(UserEntity)
+    const userFound = await userRepository.findOne({ _id: userId })
+    if(userFound)
+      userRepository.save( new UserEntity({
+        ...userFound,
+        ...editUser
+      }))
   }
 }

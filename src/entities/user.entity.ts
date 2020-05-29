@@ -43,6 +43,10 @@ export class UserEntity {
 
   @Expose()
   @Column()
+  coverPhoto: string 
+
+  @Expose()
+  @Column()
   expert: Expert
 
   @Expose()

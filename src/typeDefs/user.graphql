@@ -1,5 +1,6 @@
 type Query {
   me: User @isAuthenticated
+  getUser(userId: ID): User
 }
 
 type Mutation {
@@ -7,6 +8,7 @@ type Mutation {
   signIn(email: String, password: String): AuthRespone
   signInWithGoogle(token: String): AuthRespone
   signInWithFacebook(facebookAuthData: FacebookAuthData): AuthRespone
+  updateUser(userId: ID, editUser: EditUser): Boolean 
 }
 
 type User {
@@ -54,6 +56,10 @@ input NewUser {
   gender: Gender
   birthday: Float
   expert: NewExpert
+}
+input EditUser {
+  coverPhoto: String
+  avatar: String
 }
 
 input NewExpert {
