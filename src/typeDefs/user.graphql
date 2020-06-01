@@ -9,6 +9,7 @@ type Mutation {
   signInWithGoogle(token: String): AuthRespone
   signInWithFacebook(facebookAuthData: FacebookAuthData): AuthRespone
   updateUser(userId: ID, editUser: EditUser): Boolean 
+  updateUserInfo(userId: ID, userInfo: UserInfo): Boolean 
 }
 
 type User {
@@ -60,6 +61,13 @@ input NewUser {
 input EditUser {
   coverPhoto: String
   avatar: String
+}
+input UserInfo {
+  firstname: String
+  lastname: String
+  gender: Gender
+  birthday: Float
+  expert: NewExpert
 }
 
 input NewExpert {
