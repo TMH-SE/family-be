@@ -1,7 +1,7 @@
 import * as fs from 'fs'
-import * as sgMail from '@sendgrid/mail'
 import * as Handlebars from 'handlebars'
-import { SENDGRID_API_KEY } from '@environment'
+import { GMAIL_USERNAME, GMAIL_PASSWORD } from '@environment'
+import * as nodemailer from 'nodemailer'
 import { TemplateEmail } from '@common'
 
 export class Mailer {
@@ -11,15 +11,24 @@ export class Mailer {
     to: string[],
     replacement: any
   ) {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      secure: true,
+      auth: {
+        user: GMAIL_USERNAME,
+        pass: GMAIL_PASSWORD
+      }
+    })
     const templateEmail = {
-      GENERATE_PASSWORD: 'generatePassword.html'
+      GENERATE_PASSWORD: 'generatePassword.html',
+      VERIFY_ACCOUNT: 'verifyAccount.html'
     }
     fs.readFile(
       `src/assets/template/${templateEmail[template]}`,
       {
         encoding: 'utf8'
       },
-      (err, data) => {
+      async (err, data) => {
         if (err) {
           throw new Error(err.message)
         }
@@ -27,14 +36,13 @@ export class Mailer {
         const html = templateHandle({
           ...replacement
         })
-        sgMail.setApiKey(SENDGRID_API_KEY)
-        const mail = {
+        const mailOptions = {
           from: 'hotro01.giadinh@gmail.com',
           to: to.toLocaleString(),
           subject,
           html
         }
-        sgMail.send(mail)
+        await transporter.sendMail(mailOptions)
       }
     )
   }

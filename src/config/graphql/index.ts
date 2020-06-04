@@ -2,14 +2,14 @@ import { GqlModuleOptions, GqlOptionsFactory } from '@nestjs/graphql'
 import { PubSub } from 'graphql-subscriptions'
 import { AuthenticationError } from 'apollo-server-express'
 import { AuthService } from '@auth'
-import { ENDPOINT } from '@environment'
+import { ENDPOINT, NODE_ENV } from '@environment'
 
 const pubSub = new PubSub()
-
 export class GraphQLConfiguration implements GqlOptionsFactory {
   private authService = new AuthService()
 
   async createGqlOptions(): Promise<GqlModuleOptions> {
+    console.log(NODE_ENV)
     const directiveResolvers = {
       isAuthenticated: (next, source, args, ctx) => {
         const { currentUser } = ctx
@@ -60,7 +60,7 @@ export class GraphQLConfiguration implements GqlOptionsFactory {
           throw new AuthenticationError('Missing auth token!')
         }
       },
-      playground: process.env.NODE_ENV === 'development',
+      playground: NODE_ENV === 'development',
       formatError: ({ message, path, locations, extensions: { code } }) => ({
         message,
         path,
