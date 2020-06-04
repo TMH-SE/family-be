@@ -12,7 +12,7 @@ const JWT_VERIFY_EMAIL_SECRECT_KEY = process.env.JWT_VERIFY_EMAIL_SECRECT_KEY ||
 const ENDPOINT = process.env.ENDPOINT || 'graphqlfamily'
 
 // mongodb
-const MONGODB_URL = process.env.MONGODB_URL || 'mongodb+srv://admin:fYivEVbVcKOGYDgg@family-test-db-lx3fm.mongodb.net/test?retryWrites=true&w=majority'
+const MONGODB_URL = process.env.MONGODB_URL || 'mongodb+srv://admin:fYivEVbVcKOGYDgg@family-test-db-lx3fm.mongodb.net/test'
 
 // facebook api
 const FB_APP_ID = process.env.FB_APP_ID || ''

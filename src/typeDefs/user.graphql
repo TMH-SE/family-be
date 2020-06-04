@@ -1,6 +1,7 @@
 type Query {
   me: User @isAuthenticated
   verifyAccount(verifyToken: String): AuthRespone
+  getUser(userId: ID): User
 }
 
 type Mutation {
@@ -9,6 +10,8 @@ type Mutation {
   signInWithGoogle(token: String): AuthRespone
   signInWithFacebook(facebookAuthData: FacebookAuthData): AuthRespone
   resendConfirmMail(email: String!): Boolean
+  updateUser(userId: ID, editUser: EditUser): Boolean 
+  updateUserInfo(userId: ID, userInfo: UserInfo): Boolean 
 }
 
 type User {
@@ -56,6 +59,17 @@ input NewUser {
   phoneNumber: String
   birthday: Float
   gender: Gender
+  expert: NewExpert
+}
+input EditUser {
+  coverPhoto: String
+  avatar: String
+}
+input UserInfo {
+  firstname: String
+  lastname: String
+  gender: Gender
+  birthday: Float
   expert: NewExpert
 }
 

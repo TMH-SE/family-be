@@ -9,7 +9,7 @@ import { getMongoRepository } from 'typeorm'
 import Axios from 'axios'
 import { OAuth2Client } from 'google-auth-library'
 import { AuthService } from '@auth'
-import { NewUser, AuthRespone, FacebookAuthData } from '@generator'
+import { NewUser, AuthRespone, FacebookAuthData, EditUser, UserInfo } from '@generator'
 import { UserEntity } from '@entities'
 import { PasswordUtils, Mailer } from '@utils'
 import { FB_GRAPH_API_HOST, FB_GRAPH_API_VER } from '@constants'
@@ -81,14 +81,17 @@ export class UserResolver {
       isActive: true
     })
     if (!userFound) {
-      throw new AuthenticationError('Email or password is invalid')
+      throw new AuthenticationError('Email này chưa được đăng kí')
+    }
+    if (!userFound.verified) {
+      throw new AuthenticationError('Tài khoản này chưa được xác minh')
     }
     const match = await this.passwordUtils.comparePassword(
       password,
       userFound.password
     )
     if (!match) {
-      throw new AuthenticationError('Email or password is invalid')
+      throw new AuthenticationError('Email hoặc mật khẩu không đúng')
     }
     const accessToken = await this.authService.generateToken(userFound._id)
     return { accessToken }
@@ -209,5 +212,37 @@ export class UserResolver {
       }
     )
     return true
+  }
+
+  @Query()
+  async getUser(@Args('userId') userId: string): Promise<UserEntity>{
+    console.log(userId)
+    const userRepository = getMongoRepository(UserEntity)
+    const userFound = await userRepository.findOne({ _id: userId })
+    console.log(userFound)
+    return userFound
+  }
+  @Mutation()
+  async updateUser(@Args('userId') userId: string,
+  @Args('editUser') editUser: EditUser){
+    const userRepository = getMongoRepository(UserEntity)
+    const userFound = await userRepository.findOne({ _id: userId })
+    if(userFound)
+      userRepository.save( new UserEntity({
+        ...userFound,
+        coverPhoto: editUser.coverPhoto,
+        avatar: editUser.avatar
+      }))
+  }
+  @Mutation()
+  async updateUserInfo(@Args('userId') userId: string,
+  @Args('userInfo') userInfor: UserInfo){
+    const userRepository = getMongoRepository(UserEntity)
+    const userFound = await userRepository.findOne({ _id: userId })
+    if(userFound)
+      userRepository.save( new UserEntity({
+        ...userFound,
+        ...userInfor
+      }))
   }
 }

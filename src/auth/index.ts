@@ -16,7 +16,7 @@ export class AuthService {
   }
 
   async generateToken(userId: string) {
-    return jwt.sign({ userId }, JWT_VERIFY_EMAIL_SECRECT_KEY, {
+    return jwt.sign({ userId }, JWT_SECRECT_KEY, {
       expiresIn: '30d'
     })
   }
