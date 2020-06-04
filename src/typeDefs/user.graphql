@@ -1,5 +1,6 @@
 type Query {
   me: User @isAuthenticated
+  verifyAccount(verifyToken: String): AuthRespone
 }
 
 type Mutation {
@@ -7,6 +8,7 @@ type Mutation {
   signIn(email: String, password: String): AuthRespone
   signInWithGoogle(token: String): AuthRespone
   signInWithFacebook(facebookAuthData: FacebookAuthData): AuthRespone
+  resendConfirmMail(email: String!): Boolean
 }
 
 type User {
@@ -32,7 +34,7 @@ type User {
 enum Gender {
   MALE
   FEMALE
-  ORTHER
+  OTHER
 }
 
 type Expert {
@@ -47,12 +49,13 @@ type AuthRespone {
 }
 
 input NewUser {
-  email: String
-  password: String
   firstname: String
   lastname: String
-  gender: Gender
+  email: String
+  password: String
+  phoneNumber: String
   birthday: Float
+  gender: Gender
   expert: NewExpert
 }
 
@@ -60,7 +63,6 @@ input NewExpert {
   areasOfExpertise: String
   jobTitle: String
   yearsExperience: Int
-  isVerify: Boolean
 }
 
 input FacebookAuthData {

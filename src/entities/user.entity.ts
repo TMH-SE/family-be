@@ -43,7 +43,15 @@ export class UserEntity {
 
   @Expose()
   @Column()
+  coverPhoto: string
+
+  @Expose()
+  @Column()
   expert: Expert
+
+  @Expose()
+  @Column()
+  verified: boolean
 
   @Expose()
   @Column()
@@ -80,6 +88,7 @@ export class UserEntity {
 			this._id = this._id || uuid.v1()
 			this.createdAt = +new Date()
       this.updatedAt = +new Date()
+      this.verified = this.verified === undefined ? false : this.verified
       this.isActive = this.isActive === undefined ? true : this.isActive
 		}
 	}

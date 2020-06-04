@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ForbiddenError, AuthenticationError } from 'apollo-server-express'
+import {
+  ForbiddenError,
+  AuthenticationError,
+  ApolloError
+} from 'apollo-server-express'
 import { Resolver, Args, Mutation, Query, Context } from '@nestjs/graphql'
 import { getMongoRepository } from 'typeorm'
 import Axios from 'axios'
@@ -10,6 +14,7 @@ import { UserEntity } from '@entities'
 import { PasswordUtils, Mailer } from '@utils'
 import { FB_GRAPH_API_HOST, FB_GRAPH_API_VER } from '@constants'
 import { GOOGLE_CLIENT_ID } from '@environment'
+import { TemplateEmail } from '@common'
 // import { FB_APP_ID, FB_APP_SECRET } from '@environment'
 
 @Resolver('User')
@@ -26,7 +31,10 @@ export class UserResolver {
   }
 
   @Mutation()
-  async signUp(@Args('newUser') newUser: NewUser): Promise<boolean> {
+  async signUp(
+    @Context('req') req: any,
+    @Args('newUser') newUser: NewUser
+  ): Promise<boolean> {
     const userRepository = getMongoRepository(UserEntity)
     const userFound = await userRepository.findOne({
       email: newUser.email
@@ -46,7 +54,20 @@ export class UserResolver {
         password: hashedPassword
       })
     )
-
+    if (!!userCreated) {
+      const verifyToken = await this.authService.generateVerifyToken(
+        userCreated._id
+      )
+      this.mailer.sendMail(
+        TemplateEmail.VERIFY_ACCOUNT,
+        'XÁC MINH TÀI KHOẢN - GIADINH.TK',
+        [newUser.email],
+        {
+          name: newUser.firstname,
+          link: `${req.headers.origin}/verify/${verifyToken}`
+        }
+      )
+    }
     return !!userCreated
   }
 
@@ -136,5 +157,57 @@ export class UserResolver {
         return { accessToken }
       }
     }
+  }
+
+  @Query()
+  async verifyAccount(
+    @Args('verifyToken') verifyToken: string
+  ): Promise<AuthRespone | ApolloError> {
+    try {
+      const { currentUser, error } = await this.authService.verifyEmailToken(
+        verifyToken
+      )
+      if (error) {
+        return error
+      }
+      getMongoRepository(UserEntity).save(
+        new UserEntity({
+          ...currentUser,
+          verified: true,
+          updatedAt: +new Date(),
+          updatedBy: currentUser._id
+        })
+      )
+      const accessToken = await this.authService.generateToken(currentUser._id)
+      return {
+        accessToken
+      }
+    } catch ({ message, name }) {
+      if (message === 'jwt expired') {
+        return new ApolloError('Mail xác minh này đã hết hạn', name)
+      }
+      return new ApolloError('Mail xác minh không hợp lệ', name)
+    }
+  }
+
+  @Mutation()
+  async resendConfirmMail(@Context('req') req: any, @Args('email') email: string): Promise<boolean> {
+    const userFound = await getMongoRepository(UserEntity).findOne({ email })
+    if (!userFound || userFound.verified) {
+      return false
+    }
+    const verifyToken = await this.authService.generateVerifyToken(
+      userFound._id
+    )
+    this.mailer.sendMail(
+      TemplateEmail.VERIFY_ACCOUNT,
+      'XÁC MINH TÀI KHOẢN - GIADINH.TK',
+      [userFound.email],
+      {
+        name: userFound.firstname,
+        link: `${req.headers.origin}/verify/${verifyToken}`
+      }
+    )
+    return true
   }
 }
