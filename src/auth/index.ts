@@ -1,7 +1,7 @@
-import * as jwt from 'jsonwebtoken'
 import { JWT_SECRECT_KEY, JWT_VERIFY_EMAIL_SECRECT_KEY } from '@environment'
 import { getMongoRepository } from 'typeorm'
-import { AuthenticationError, ForbiddenError, ApolloError } from 'apollo-server-express'
+import { AuthenticationError, ForbiddenError } from 'apollo-server-express'
+const jwt = require('jsonwebtoken')
 import { UserEntity } from '@entities'
 
 export class AuthService {
