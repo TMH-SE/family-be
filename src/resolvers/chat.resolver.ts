@@ -12,8 +12,10 @@ export class ChatResolver {
     const chatFound = await getMongoRepository(ChatEntity).find({
       where: { 
         members: userId
-      }
+      },
+      order: {lastActivity: 'DESC'}
     })
+    // chatFound.sort((a, b) => a.lastActivity - b.lastActivity)
     return chatFound
   }
  
@@ -34,7 +36,8 @@ export class ChatResolver {
     }
     const chatCreated = await chatRepository.save(
         new ChatEntity({
-          members
+          members,
+          lastActivity: +new Date()
         })
       )
   console.log(chatFound, chatCreated )
@@ -42,10 +45,15 @@ export class ChatResolver {
   }
 
   @Mutation()
-  async deleteAll(): Promise<boolean> {
-       getMongoRepository(ChatEntity).deleteMany({
-         members: "9060abf0-a158-11ea-af70-039490da2a90" 
-       })
+  async updateChat(@Args('chatId') chatId: string): Promise<boolean> {
+    const chatRepository = getMongoRepository(ChatEntity)
+    const chatFound = await chatRepository.findOne({ _id: chatId })
+    if(chatFound)
+      chatRepository.save( new ChatEntity({
+        ...chatFound,
+        lastActivity: +new Date()
+      }))
+      console.log(chatFound, 'chatfonud')
       return true
   }
 }

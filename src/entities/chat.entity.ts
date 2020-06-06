@@ -17,6 +17,9 @@ export class ChatEntity {
   @Column()
   isBlock: boolean
 
+  @Expose()
+  @Column()
+  lastActivity: number
 
   constructor(chat: Partial<ChatEntity>) {
 		if (chat) {
@@ -27,7 +30,8 @@ export class ChatEntity {
 				})
 			)
 			this._id = this._id || uuid.v1()
-            this.isBlock = false
+            this.isBlock = this.isBlock || false
+            this.lastActivity = this.lastActivity || +new Date()
 		}
 	}
 

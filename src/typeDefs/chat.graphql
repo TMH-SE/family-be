@@ -5,10 +5,11 @@ type Query {
 
 type Mutation {
     createChat(members: [String]): Chat
-    deleteAll: Boolean
+    updateChat(chatId: String): Boolean
 }
 type Chat {
   _id: ID
   members: [String]
   isBlock: Boolean
+  lastActivity: Float
 }
