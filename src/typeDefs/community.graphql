@@ -1,0 +1,43 @@
+type Query {
+  communities: [CommunityRespone]
+}
+
+type Mutation {
+  createCommunity(newCommunity: NewCommunity): Boolean
+  updateCommunity(_id: ID!, newCommunity: NewCommunity): Boolean
+  deleteCommunities(ids: [ID]): Boolean
+}
+
+type Community {
+  _id: ID
+  name: String
+  avatar: String
+  coverPhoto: String
+  isActive: Boolean
+  createdAt: Float
+  createdBy: ID
+  updatedAt: Float
+  updatedBy: ID
+  deletedAt: Float
+  deletedBy: ID
+}
+
+type CommunityRespone {
+  _id: ID
+  name: String
+  avatar: String
+  coverPhoto: String
+  isActive: Boolean
+  createdAt: Float
+  createdBy: User
+  updatedAt: Float
+  updatedBy: User
+  deletedAt: Float
+  deletedBy: User
+}
+
+input NewCommunity {
+  name: String
+  avatar: String
+  coverPhoto: String
+}

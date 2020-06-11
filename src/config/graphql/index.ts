@@ -43,6 +43,7 @@ export class GraphQLConfiguration implements GqlOptionsFactory {
         const token = req.headers['access-token']
 
         let ctx = {}
+
         if (token) {
           ctx = await this.authService.verifyToken(token)
         }

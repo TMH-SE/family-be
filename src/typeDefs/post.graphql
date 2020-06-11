@@ -1,0 +1,44 @@
+type Query {
+  posts: [PostRespone]
+}
+
+type Mutation {
+  createPost(newPost: NewPost): Boolean
+}
+
+type Post {
+  _id: ID
+  title: String
+  content: String
+  thumbnail: String
+  communityId: ID
+  isActive: Boolean
+  createdAt: Float
+  createdBy: ID
+  updatedAt: Float
+  updatedBy: ID
+  deletedAt: Float
+  deletedBy: ID
+}
+
+type PostRespone {
+  _id: ID
+  title: String
+  content: String
+  thumbnail: String
+  community: Community
+  isActive: Boolean
+  createdAt: Float
+  createdBy: User
+  updatedAt: Float
+  updatedBy: User
+  deletedAt: Float
+  deletedBy: User
+}
+
+input NewPost {
+  title: String
+  content: String
+  thumbnail: String
+  communityId: ID
+}
