@@ -24,6 +24,7 @@ deployFamilyTest:
 #     - chmod 644 ~/.ssh/known_hosts
   script:
     - pwd
+    - ssh-keygen -y
     # - npm i
     # - npm run generate
     # - npm run build
