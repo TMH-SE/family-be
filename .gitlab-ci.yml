@@ -28,7 +28,7 @@ deployFamilyTest:
     - npm run build
     # - ssh -o "StrictHostKeyChecking=no" ${DEPLOY_USER}@${DEPLOY_SERVER} 'rm -rf /home/${DEPLOY_USER}/dservices/test-family-be/'
     # - rsync -aO -e "ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" . ${DEPLOY_USER}@${DEPLOY_SERVER}:/home/${DEPLOY_USER}/services/test-family-be
-    - rsync -avqPz . /home/${DEPLOY_USER}/services/test-family-be --delete
+    - rsync -azvhq . /home/${DEPLOY_USER}/services/test-family-be/ --delete
     # - ssh -o "StrictHostKeyChecking=no" ${DEPLOY_USER}@${DEPLOY_SERVER} 'bash scripts/test-family-be.sh'
     - bash /home/${DEPLOY_USER}/scripts/test-family-be.sh
 
