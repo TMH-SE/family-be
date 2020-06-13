@@ -21,6 +21,18 @@ export class CommunityUserResolver {
     return communityUserFound ? communityUserFound.length : 0
   }
   @Query()
+  async getCommunitiesByUser(@Args('userId') userId: string) {
+    const communityUserFound = await getMongoRepository(CommunityUserEntity).aggregate([
+      {
+        $match: {
+          userId: userId
+        }
+      },
+      ...PIPELINE_COMMUNITY
+    ]).toArray()
+    return communityUserFound
+  }
+  @Query()
   async checkIsMember(@Args('id') id: CommunityUserInput): Promise<boolean> {
     const communityUserFound = await getMongoRepository(CommunityUserEntity).findOne({
       _id: id
