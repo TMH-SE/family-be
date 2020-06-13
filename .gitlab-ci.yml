@@ -12,23 +12,26 @@ deployFamilyTest:
   only:
     - test
   stage: deloyTest
-  before_script: 
-    - apt-get update -y
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - which rsync || ( apt-get update -y && apt-get install rsync -y )
-    - mkdir -p ~/.ssh
-    - echo -e "$SSH_SECRET_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
+  # before_script: 
+  #   - apt-get update -y
+  #   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  #   - eval $(ssh-agent -s)
+  #   - which rsync || ( apt-get update -y && apt-get install rsync -y )
+  #   - mkdir -p ~/.ssh
+  #   - echo -e "$SSH_SECRET_KEY" > ~/.ssh/id_rsa
+  #   - chmod 600 ~/.ssh/id_rsa
+  #   - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+  #   - chmod 644 ~/.ssh/known_hosts
   script:
     - npm i
     - npm run generate
     - npm run build
-    - ssh -o "StrictHostKeyChecking=no" ${DEPLOY_USER}@${DEPLOY_SERVER} 'rm -rf /home/${DEPLOY_USER}/services/test-family-be/'
-    - rsync -aO -e "ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" . ${DEPLOY_USER}@${DEPLOY_SERVER}:/home/${DEPLOY_USER}/services/test-family-be
-    - ssh -o "StrictHostKeyChecking=no" ${DEPLOY_USER}@${DEPLOY_SERVER} 'bash scripts/test-family-be.sh'
+    # - ssh -o "StrictHostKeyChecking=no" ${DEPLOY_USER}@${DEPLOY_SERVER} 'rm -rf /home/${DEPLOY_USER}/dservices/test-family-be/'
+    # - rsync -aO -e "ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" . ${DEPLOY_USER}@${DEPLOY_SERVER}:/home/${DEPLOY_USER}/services/test-family-be
+    - rsync -azvhq . /home/${DEPLOY_USER}/services/test-family-be/ --delete
+    # - ssh -o "StrictHostKeyChecking=no" ${DEPLOY_USER}@${DEPLOY_SERVER} 'bash scripts/test-family-be.sh'
+    - bash /home/${DEPLOY_USER}/scripts/test-family-be.sh
+
 
 deployFamily:
   only:
@@ -49,5 +52,5 @@ deployFamily:
     - npm run generate
     - npm run build
     - ssh -o "StrictHostKeyChecking=no" ${DEPLOY_USER}@${DEPLOY_SERVER} 'rm -rf /home/${DEPLOY_USER}/services/family-be/'
-    - rsync -aO -e "ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" . ${DEPLOY_USER}@${DEPLOY_SERVER}:/home/${DEPLOY_USER}/services/family-be
+    - rsync -aO -e "ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" . ${DEPLOY_USER}@${DEPLOY_SERVER}:/home/${DEPLOY_USER}/services/family-be 
     - ssh -o "StrictHostKeyChecking=no" ${DEPLOY_USER}@${DEPLOY_SERVER} 'bash scripts/family-be.sh'
