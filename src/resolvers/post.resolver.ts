@@ -2,6 +2,7 @@ import { Resolver, Mutation, Args, Context, Query } from '@nestjs/graphql'
 import { NewPost } from '@generator'
 import { getMongoRepository } from 'typeorm'
 import { PostEntity, UserEntity } from '@entities'
+import { PIPELINE_USER } from '@constants'
 
 @Resolver('Post')
 export class PostResolver {
@@ -19,7 +20,8 @@ export class PostResolver {
         $match: {
           isActive: true
         }
-      }
+      },
+      ...PIPELINE_USER
     ]).toArray()
     console.log(results)
     return results
