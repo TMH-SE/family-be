@@ -15,6 +15,14 @@ export class CommunityResolver {
     return results
   }
 
+  @Query()
+  async communityById(@Args('id') id: string) {
+    const results = await getMongoRepository(CommunityEntity)
+      .aggregate([{ $match: { isActive: true, _id: id } }, ...PIPELINE_USER])
+      .toArray()
+    return results[0]
+  }
+
   @Mutation()
   async createCommunity(
     @Context('currentUser') currentUser: UserEntity,

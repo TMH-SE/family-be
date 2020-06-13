@@ -1,13 +1,13 @@
 import { Entity, ObjectIdColumn, Column } from 'typeorm'
 import { Expose, plainToClass } from 'class-transformer'
-import { SavedPostId } from '@generator'
+import { CommunityUserId } from '@generator'
 
 
-@Entity('savedpost')
-export class SavedPostEntity {
+@Entity('communityUser')
+export class CommunityUserEntity {
   @Expose()
   @ObjectIdColumn()
-  _id: SavedPostId
+  _id: CommunityUserId
 
   @Expose()
   @Column()
@@ -15,15 +15,15 @@ export class SavedPostEntity {
 
   @Expose()
   @Column()
-  postId: string
+  communityId: string
 
 
 
-  constructor(savedpost: Partial<SavedPostEntity>) {
-		if (savedpost) {
+  constructor(communityUser: Partial<CommunityUserEntity>) {
+		if (communityUser) {
 			Object.assign(
 				this,
-				plainToClass(SavedPostEntity, savedpost, {
+				plainToClass(CommunityUserEntity, communityUser, {
 					excludeExtraneousValues: true
 				})
 			)

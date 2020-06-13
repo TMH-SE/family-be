@@ -1,13 +1,13 @@
 type Query {
-    getSavedPostByUser(userId: String): [SavedPost]
+    getSavedPostByUser(userId: String): [SavedPostRespone]
     checkIsSaved(id: SavedPostInput): Boolean
 }
 
 type Mutation {
-    createAndDeleteSavedPost(id: SavedPostInput, post: PostInput): Boolean
+    createAndDeleteSavedPost(id: SavedPostInput): Boolean
     deleteAllSaved: Boolean
 }
-type SavedPost {
+type SavedPostRespone {
   _id: SavedPostId
   post: PostRespone
 }
@@ -18,49 +18,4 @@ input SavedPostInput {
 type SavedPostId{
     userId: String
     postId: String
-}
-input CommunityInput {
-  _id: ID
-  name: String
-  avatar: String
-  coverPhoto: String
-  isActive: Boolean
-  createdAt: Float
-  createdBy: ID
-  updatedAt: Float
-  updatedBy: ID
-  deletedAt: Float
-  deletedBy: ID
-}
-
-input ExpertInput {
-  _id: ID
-  areasOfExpertise: String
-  jobTitle: String
-  yearsExperience: Int
-  isVerify: Boolean
-}
-input UserInput{
-  _id: ID
-  firstname: String
-  lastname: String
-  gender: Gender
-  birthday: Float
-  expert: ExpertInput
-  phoneNumber: String
-  avatar: String
-}
-input PostInput {
-  _id: ID
-  title: String
-  content: String
-  thumbnail: String
-  community: CommunityInput
-  isActive: Boolean
-  createdAt: Float
-  createdBy: UserInput
-  updatedAt: Float
-  updatedBy: UserInput
-  deletedAt: Float
-  deletedBy: UserInput
 }

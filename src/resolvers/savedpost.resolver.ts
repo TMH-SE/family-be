@@ -1,21 +1,36 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Resolver, Args, Mutation, Query } from '@nestjs/graphql'
 import { getMongoRepository } from 'typeorm'
-
-import { SavedPostInput, PostInput } from '@generator'
-import { SavedPostEntity } from '@entities'
+import { PIPELINE_USER, PIPELINE_POST, PIPELINE_COMMUNITY } from '@constants'
+import { SavedPostInput } from '@generator'
+import { SavedPostEntity, PostEntity } from '@entities'
 
 @Resolver('SavedPost')
 export class SavedPostResolver {
   @Query()
   async getSavedPostByUser(@Args('userId') userId: string) {
-    const savedpostFound = await getMongoRepository(SavedPostEntity).find()
-    // {  where: {
-    //     _id: { userId }
-    //   }
-    // })
-
-    return savedpostFound.filter(item => item._id.userId === userId)
+    const savedpostFound = await getMongoRepository(SavedPostEntity).aggregate([
+      {
+        $match: {
+          userId: userId
+        }
+      },
+      ...PIPELINE_USER,
+      ...PIPELINE_POST
+    ]).toArray()
+    return savedpostFound.map(async saved => {
+      const results = await getMongoRepository(PostEntity).aggregate([
+        {
+          $match: {
+            _id: saved?.post?._id
+          }
+        },
+        ...PIPELINE_USER,
+        ...PIPELINE_COMMUNITY
+      ]).toArray()
+      return {...saved, post: results[0]}
+    
+    })
   }
   @Query()
   async checkIsSaved(@Args('id') id: SavedPostInput): Promise<boolean> {
@@ -26,8 +41,7 @@ export class SavedPostResolver {
   }
   @Mutation()
   async createAndDeleteSavedPost(
-    @Args('id') id: SavedPostInput,
-    @Args('post') post: PostInput
+    @Args('id') id: SavedPostInput
   ): Promise<boolean> {
     const savedpostRepository = getMongoRepository(SavedPostEntity)
     const savedpostFound = await this.checkIsSaved(id)
@@ -37,7 +51,8 @@ export class SavedPostResolver {
       await savedpostRepository.save(
         new SavedPostEntity({
           _id: id,
-          post: post
+          userId: id.userId,
+          postId: id.postId 
         })
       )
     }

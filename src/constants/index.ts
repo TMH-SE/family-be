@@ -49,5 +49,36 @@ const PIPELINE_USER = [
 	}
 ]
 
-
-export { SALT_ROUNDS, FB_GRAPH_API_HOST, FB_GRAPH_API_VER, PIPELINE_USER }
+const PIPELINE_COMMUNITY = [
+	{
+		$lookup: {
+			from: 'communities',
+			localField: 'communityId',
+			foreignField: '_id',
+			as: 'community'
+		}
+	},
+	{
+		$unwind: {
+			path: '$community',
+			preserveNullAndEmptyArrays: true
+		}
+	},
+]
+const PIPELINE_POST = [
+	{
+		$lookup: {
+			from: 'posts',
+			localField: 'postId',
+			foreignField: '_id',
+			as: 'post'
+		}
+	},
+	{
+		$unwind: {
+			path: '$post',
+			preserveNullAndEmptyArrays: true
+		}
+	},
+]
+export { SALT_ROUNDS, FB_GRAPH_API_HOST, FB_GRAPH_API_VER, PIPELINE_USER, PIPELINE_COMMUNITY, PIPELINE_POST }

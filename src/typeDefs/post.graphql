@@ -1,5 +1,8 @@
 type Query {
   posts: [PostRespone]
+  postsByCommunity(communityId: String): [PostRespone]
+  postById(id: String): PostRespone
+  postsByUser(userId: String): [PostRespone]
 }
 
 type Mutation {
