@@ -6,6 +6,7 @@ type Query {
 type Mutation {
     createAndDeleteSavedPost(id: SavedPostInput): Boolean
     deleteAllSaved: Boolean
+    deleteSavedPostsByPost(postId: String): Boolean
 }
 type SavedPostRespone {
   _id: SavedPostId

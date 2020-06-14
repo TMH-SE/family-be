@@ -22,6 +22,7 @@ export class CommunityUserResolver {
   }
   @Query()
   async getCommunitiesByUser(@Args('userId') userId: string) {
+    console.log(await getMongoRepository(CommunityUserEntity).find())
     const communityUserFound = await getMongoRepository(CommunityUserEntity).aggregate([
       {
         $match: {

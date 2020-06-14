@@ -7,6 +7,8 @@ type Query {
 
 type Mutation {
   createPost(newPost: NewPost): Boolean
+  updatePost(postId: String, updatePost: UpdatePostInput): Boolean
+  deletePost(postId: String): Boolean
 }
 
 type Post {
@@ -23,7 +25,11 @@ type Post {
   deletedAt: Float
   deletedBy: ID
 }
-
+input UpdatePostInput {
+  title: String
+  content: String
+  thumbnail: String
+}
 type PostRespone {
   _id: ID
   title: String

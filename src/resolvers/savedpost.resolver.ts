@@ -15,17 +15,16 @@ export class SavedPostResolver {
           userId: userId
         }
       },
-      ...PIPELINE_USER,
       ...PIPELINE_POST
     ]).toArray()
     return savedpostFound.map(async saved => {
       const results = await getMongoRepository(PostEntity).aggregate([
         {
           $match: {
-            _id: saved?.post?._id
+            _id: saved?.post?._id,
+            isActive: true
           }
         },
-        ...PIPELINE_USER,
         ...PIPELINE_COMMUNITY
       ]).toArray()
       return {...saved, post: results[0]}
@@ -57,6 +56,11 @@ export class SavedPostResolver {
       )
     }
     return true
+  }
+  @Mutation()
+  async deleteSavedPostsByPost(@Args('postId') postId: string): Promise<boolean> {
+    await getMongoRepository(SavedPostEntity).deleteMany({ postId })
+    return  true
   }
   @Mutation()
   async deleteAllSaved(): Promise<boolean> {

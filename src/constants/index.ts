@@ -1,3 +1,5 @@
+import { truncateSync } from "fs"
+
 const SALT_ROUNDS = 10
 
 const FB_GRAPH_API_HOST = 'https://graph.facebook.com'

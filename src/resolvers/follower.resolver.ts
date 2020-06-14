@@ -11,7 +11,7 @@ export class FollowerResolver {
   async getSumFollowerByUser(@Args('userId') userId: string): Promise<number> {
     const followerFound = await getMongoRepository(FollowerEntity).find({
       where: {
-        _id: { userId }
+        userId
       }
     })
     return followerFound.length
@@ -23,24 +23,19 @@ export class FollowerResolver {
       _id: id
     })
     console.log(followerFound !== null, followerFound)
-    return !!followerFound 
+    return !!followerFound
   }
   @Mutation()
   async createFollower(@Args('id') id: FollowerInput): Promise<boolean> {
     const followerRepository = getMongoRepository(FollowerEntity)
-    // const followerFound = await this.checkFollow(id)
-    // if (followerFound) {
-    //     console.log('err')
-    //     return false
-    // //   throw new AuthenticationError('Email or password is invalid')
-    // }
     const followerCreated = await followerRepository.save(
       new FollowerEntity({
-        _id: id
+        _id: id,
+        followerId: id.followerId,
+        userId: id.userId
       })
     )
-    // console.log(followerFound, followerCreated)
-    return true
+    return !!followerCreated
   }
 
   @Mutation()
