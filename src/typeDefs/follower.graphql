@@ -1,11 +1,15 @@
 type Query {
-    getSumFollowerByUser(userId: String): Int
+    getFollowerByUser(userId: String):[FollowerRespone]
     checkFollow(id: FollowerInput): Boolean
 }
 
 type Mutation {
     createFollower(id: FollowerInput): Boolean
     deleteFollower(id: FollowerInput): Boolean
+}
+type FollowerRespone {
+  _id: FollowerID
+  follower: User
 }
 type Follower {
   _id: FollowerID

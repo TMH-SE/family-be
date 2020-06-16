@@ -22,7 +22,9 @@ export class PostResolver {
     const createdPost = await getMongoRepository(PostEntity).save(
       new PostEntity({ ...newPost, createdBy: currentUser._id })
     )
-    return !!createdPost
+    console.log(createdPost)
+    // return new PostEntity({ ...new Post, createdBy: currentUser._id }
+    return createdPost
   }
   @Mutation()
   async updatePost(
@@ -39,7 +41,7 @@ export class PostResolver {
       new PostEntity({
         ...postFound,
         ...updatePost,
-        updatedBy: currentUser._id,
+        updatedBy: currentUser?._id,
         updatedAt: +new Date()
       })
     )
@@ -54,7 +56,7 @@ export class PostResolver {
       ...postFound,
       isActive: false,
       deletedAt: +new Date(),
-      deletedBy: currentUser._id
+      deletedBy: currentUser?._id
     })
     const deleted = await getMongoRepository(PostEntity).save(
       deletepostFound
@@ -86,7 +88,8 @@ export class PostResolver {
       .aggregate([
         {
           $match: {
-            _id: id
+            _id: id,
+            isActive: true
           }
         },
         ...PIPELINE_USER,

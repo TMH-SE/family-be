@@ -25,7 +25,8 @@ export class SavedPostResolver {
             isActive: true
           }
         },
-        ...PIPELINE_COMMUNITY
+        ...PIPELINE_COMMUNITY,
+        ...PIPELINE_USER
       ]).toArray()
       return {...saved, post: results[0]}
     
