@@ -108,6 +108,9 @@ export class PostResolver {
             isActive: true
           }
         },
+        {
+          $sort: { createdAt: -1 }
+        },
         ...PIPELINE_USER,
         ...PIPELINE_COMMUNITY
       ])
