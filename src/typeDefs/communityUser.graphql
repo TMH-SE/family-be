@@ -1,0 +1,22 @@
+type Query {
+    getMembersByCommunity(communityId: String): Float
+    checkIsMember(id: CommunityUserInput): Boolean
+    getCommunitiesByUser(userId: String): [CommunityUserResponse]
+}
+
+type Mutation {
+    createAndDeleteMember(id: CommunityUserInput): Boolean
+    deleteAllMembers: Boolean
+}
+type CommunityUserResponse{
+    _id: CommunityUserId
+    community: CommunityRespone
+}
+input CommunityUserInput {
+    userId: String
+    communityId: String
+}
+type CommunityUserId{
+    userId: String
+    communityId: String
+}

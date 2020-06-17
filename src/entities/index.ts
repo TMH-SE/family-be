@@ -1,5 +1,6 @@
 export * from './user.entity'
-export * from './chat.entity'
 export * from './follower.entity'
 export * from './post.entity'
 export * from './community.entity'
+export * from './savedpost.entity'
+export * from './communityUser.entity'

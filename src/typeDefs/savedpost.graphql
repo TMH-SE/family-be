@@ -1,0 +1,22 @@
+type Query {
+    getSavedPostByUser(userId: String): [SavedPostRespone]
+    checkIsSaved(id: SavedPostInput): Boolean
+}
+
+type Mutation {
+    createAndDeleteSavedPost(id: SavedPostInput): Boolean
+    deleteAllSaved: Boolean
+    deleteSavedPostsByPost(postId: String): Boolean
+}
+type SavedPostRespone {
+  _id: SavedPostId
+  post: PostRespone
+}
+input SavedPostInput {
+    userId: String
+    postId: String
+}
+type SavedPostId{
+    userId: String
+    postId: String
+}

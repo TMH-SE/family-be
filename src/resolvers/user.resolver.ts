@@ -50,7 +50,7 @@ export class UserResolver {
 
     const userCreated = await userRepository.save(
       new UserEntity({
-        ...newUser,
+        ...newUser,          
         password: hashedPassword
       })
     )
@@ -219,8 +219,7 @@ export class UserResolver {
     console.log(userId)
     const userRepository = getMongoRepository(UserEntity)
     const userFound = await userRepository.findOne({ _id: userId })
-    console.log(userFound)
-    return userFound
+    return userFound ? {...userFound, avatar: userFound.avatar || 'https://lh3.googleusercontent.com/proxy/6C5Z-8XG57kW_mwwDGrOz6PxPeVCy8D2cdZWKafAdYfyTxWRECggO74MhJSria5djCNtW-7r5bdxfSGoZhkqSyBN34OFbpfjwrc43LbI'} : null
   }
   @Mutation()
   async updateUser(@Args('userId') userId: string,
