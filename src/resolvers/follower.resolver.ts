@@ -3,18 +3,41 @@ import { Resolver, Args, Mutation, Query } from '@nestjs/graphql'
 import { getMongoRepository } from 'typeorm'
 
 import { FollowerEntity } from '@entities'
-import { FollowerInput } from '@generator'
+import { FollowerInput, FollowerRespone } from '@generator'
+import { PIPELINE_USER } from '@constants'
 
 @Resolver('Follower')
 export class FollowerResolver {
   @Query()
-  async getSumFollowerByUser(@Args('userId') userId: string): Promise<number> {
-    const followerFound = await getMongoRepository(FollowerEntity).find({
-      where: {
-        _id: { userId }
+  async getFollowerByUser(@Args('userId') userId: string): Promise<FollowerRespone[]> {
+    const results = await getMongoRepository(FollowerEntity)
+    .aggregate([
+      {
+        $match: {
+          userId
+        }
+      },
+      {
+        $sort: { createdAt: -1 }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'followerId',
+          foreignField: '_id',
+          as: 'follower'
+        }
+      },
+      {
+        $unwind: {
+          path: '$follower',
+          preserveNullAndEmptyArrays: true
+        }
       }
-    })
-    return followerFound.length
+    ])
+    .toArray()
+   
+    return results
   }
 
   @Query()
@@ -23,24 +46,19 @@ export class FollowerResolver {
       _id: id
     })
     console.log(followerFound !== null, followerFound)
-    return !!followerFound 
+    return !!followerFound
   }
   @Mutation()
   async createFollower(@Args('id') id: FollowerInput): Promise<boolean> {
     const followerRepository = getMongoRepository(FollowerEntity)
-    // const followerFound = await this.checkFollow(id)
-    // if (followerFound) {
-    //     console.log('err')
-    //     return false
-    // //   throw new AuthenticationError('Email or password is invalid')
-    // }
     const followerCreated = await followerRepository.save(
       new FollowerEntity({
-        _id: id
+        _id: id,
+        followerId: id.followerId,
+        userId: id.userId
       })
     )
-    // console.log(followerFound, followerCreated)
-    return true
+    return !!followerCreated
   }
 
   @Mutation()

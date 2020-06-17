@@ -1,5 +1,6 @@
 type Query {
   communities: [CommunityRespone]
+  communityById(id: String): CommunityRespone
 }
 
 type Mutation {
