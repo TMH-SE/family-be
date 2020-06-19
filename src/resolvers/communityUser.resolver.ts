@@ -20,9 +20,20 @@ export class CommunityUserResolver {
     ]).toArray()
     return communityUserFound ? communityUserFound.length : 0
   }
+  async getMembersByCommu(@Args('communityId') communityId: string) {
+    const communityUserFound = await getMongoRepository(CommunityUserEntity).aggregate([
+      {
+        $match: {
+          communityId: communityId
+        }
+      },
+      ...PIPELINE_USER,
+      ...PIPELINE_COMMUNITY
+    ]).toArray()
+    return communityUserFound ? communityUserFound.length : 0
+  }
   @Query()
   async getCommunitiesByUser(@Args('userId') userId: string) {
-    console.log(await getMongoRepository(CommunityUserEntity).find())
     const communityUserFound = await getMongoRepository(CommunityUserEntity).aggregate([
       {
         $match: {

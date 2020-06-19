@@ -35,6 +35,8 @@ type CommunityRespone {
   updatedBy: User
   deletedAt: Float
   deletedBy: User
+  countMember: Float
+  countPost: Float
 }
 
 input NewCommunity {
