@@ -1,0 +1,42 @@
+type Query {
+  seminars: [SeminarRespone]
+  seminar(_id: ID): SeminarRespone
+}
+
+type Mutation {
+  createSeminar(newSeminar: NewSeminar): Boolean
+}
+
+type Seminar {
+  _id: ID
+  title: String
+  description: String
+  startAt: Float
+  isActive: Boolean
+  createdAt: Float
+  createdBy: ID
+  updatedAt: Float
+  updatedBy: ID
+  deletedAt: Float
+  deletedBy: ID
+}
+
+type SeminarRespone {
+  _id: ID
+  title: String
+  description: String
+  startAt: Float
+  isActive: Boolean
+  createdAt: Float
+  createdBy: User
+  updatedAt: Float
+  updatedBy: User
+  deletedAt: Float
+  deletedBy: User
+}
+
+input NewSeminar {
+  title: String
+  description: String
+  startAt: Float
+}
