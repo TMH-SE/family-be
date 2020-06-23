@@ -64,8 +64,7 @@ export class PostResolver {
     return !!deleted
   }
   @Query()
-  async posts(@Context('currentUser') currentUser: UserEntity) {
-    console.log(currentUser)
+  async posts(@Context('currentUser') currentUser: UserEntity, @Args('quantity') quantity: number) {
     const results = await getMongoRepository(PostEntity)
       .aggregate([
         {
@@ -75,6 +74,9 @@ export class PostResolver {
         },
         {
           $sort: { createdAt: -1 }
+        },
+        {
+          $limit: quantity 
         },
         ...PIPELINE_USER,
         ...PIPELINE_COMMUNITY
