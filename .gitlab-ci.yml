@@ -30,5 +30,5 @@ deployFamily:
     - npm run generate
     - npm run dbseed
     - npm run build
-    - rsync -azvhq . /home/${DEPLOY_USER}/services/family-be --delete
+    - rsync -azvhq . /home/${DEPLOY_USER}/services/family-be/ --delete
     - bash /home/${DEPLOY_USER}/scripts/family-be.sh
