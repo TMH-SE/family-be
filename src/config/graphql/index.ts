@@ -3,6 +3,7 @@ import { PubSub } from 'graphql-subscriptions'
 import { AuthenticationError } from 'apollo-server-express'
 import { AuthService } from '@auth'
 import { ENDPOINT, NODE_ENV } from '@environment'
+import { Role } from '@generator'
 
 const pubSub = new PubSub()
 export class GraphQLConfiguration implements GqlOptionsFactory {
@@ -14,17 +15,26 @@ export class GraphQLConfiguration implements GqlOptionsFactory {
       isAuthenticated: (next, source, args, ctx) => {
         const { currentUser } = ctx
         if (!currentUser) {
-          throw new AuthenticationError('Missing or invalid token!')
+          throw new AuthenticationError('No have access!')
         }
 
         return next()
       },
       isAdmin: (next, source, args, ctx) => {
         const { currentUser } = ctx
-        if (!currentUser.isAdmin) {
-          throw new AuthenticationError('Missing or invalid token!')
+        if (
+          currentUser.role !== Role.ADMIN &&
+          currentUser.role !== Role.SUPERADMIN
+        ) {
+          throw new AuthenticationError('No have access!')
         }
-
+        return next()
+      },
+      isSuper: (next, source, args, ctx) => {
+        const { currentUser } = ctx
+        if (currentUser.role !== Role.SUPERADMIN) {
+          throw new AuthenticationError('No have access!')
+        }
         return next()
       }
     }
