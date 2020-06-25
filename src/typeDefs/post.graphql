@@ -1,5 +1,5 @@
 type Query {
-  posts: [PostRespone]
+  posts(quantity: Int): [PostRespone]
   postsByCommunity(communityId: String): [PostRespone]
   postById(id: String): PostRespone
   postsByUser(userId: String): [PostRespone]
