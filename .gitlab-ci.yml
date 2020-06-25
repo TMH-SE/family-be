@@ -1,23 +1,24 @@
 image: node:latest
 
 stages:
-  - deloyTest
+  # - deloyTest
   - deploy
 
 cache:
   paths:
   - node_modules/
 
-deployFamilyTest:
-  only:
-    - test
-  stage: deloyTest
-  script:
-    - npm i
-    - npm run generate
-    - npm run build
-    - rsync -azvhq . /home/${DEPLOY_USER}/services/test-family-be/ --delete
-    - bash /home/${DEPLOY_USER}/scripts/test-family-be.sh
+# deployFamilyTest:
+#   only:
+#     - test
+#   stage: deloyTest
+#   script:
+#     - npm i
+#     - npm run generate
+#     - npm run dbseed
+#     - npm run build
+#     - rsync -azvhq . /home/${DEPLOY_USER}/services/test-family-be/ --delete
+#     - bash /home/${DEPLOY_USER}/scripts/test-family-be.sh
 
 
 deployFamily:
@@ -27,6 +28,7 @@ deployFamily:
   script:
     - npm i
     - npm run generate
+    - npm run dbseed
     - npm run build
     - rsync -azvhq . /home/${DEPLOY_USER}/services/family-be --delete
     - bash /home/${DEPLOY_USER}/scripts/family-be.sh

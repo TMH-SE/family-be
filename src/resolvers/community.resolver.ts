@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql'
 import { getMongoRepository } from 'typeorm'
-import { CommunityEntity, UserEntity, CommunityUserEntity } from '@entities'
+import { CommunityEntity, UserEntity } from '@entities'
 import { NewCommunity } from '@generator'
 import { PIPELINE_USER } from '@constants'
 import { UserInputError, ForbiddenError } from 'apollo-server-express'
