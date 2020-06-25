@@ -3,7 +3,7 @@ import { MongoClient } from 'mongodb'
 import { hash } from 'bcrypt'
 import { MONGODB_URL } from './environment'
 
-async function dbseed() {
+export const dbseed = async () => {
   console.log('Database seeding...')
   const client = new MongoClient(MONGODB_URL, {
     useNewUrlParser: true,
@@ -62,5 +62,3 @@ async function dbseed() {
     client.close()
   }
 }
-
-dbseed()

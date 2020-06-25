@@ -28,7 +28,6 @@ deployFamily:
   script:
     - npm i
     - npm run generate
-    - npm run dbseed
     - npm run build
     - rsync -azvhq . /home/devops/services/family-be/ --delete
     - bash /home/devops/scripts/family-be.sh
