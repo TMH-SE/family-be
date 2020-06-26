@@ -12,12 +12,13 @@ type Mutation {
   signInWithGoogle(token: String): AuthRespone
   signInWithFacebook(facebookAuthData: FacebookAuthData): AuthRespone
   resendConfirmMail(email: String!): Boolean
-  updateUser(userId: ID, editUser: EditUser): Boolean 
+  updateUser(userId: ID, editUser: EditUser): Boolean
   updateUserInfo(userId: ID, userInfo: UserInfo): Boolean 
   deleteUser(userId: ID): Boolean
   createAdmin(newAdmin: NewAdmin): Boolean
   updateAdmin(_id: ID, newAdmin: NewAdmin): Boolean
   deleteAdmins(ids: [ID]): Boolean
+  verifyOrRejectExpert(userId: ID, isVerify: Boolean): Boolean
 }
 
 type User {
