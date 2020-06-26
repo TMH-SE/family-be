@@ -12,6 +12,7 @@ type Mutation {
   resendConfirmMail(email: String!): Boolean
   updateUser(userId: ID, editUser: EditUser): Boolean 
   updateUserInfo(userId: ID, userInfo: UserInfo): Boolean 
+  deleteUser(userId: ID): Boolean
 }
 
 type User {
