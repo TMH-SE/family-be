@@ -9,6 +9,7 @@ type Mutation {
   createPost(newPost: NewPost): Post
   updatePost(postId: String, updatePost: UpdatePostInput): Boolean
   deletePost(postId: String): Boolean
+  searchAllPosts(query: String): [PostRespone]
 }
 
 type Post {
@@ -16,6 +17,7 @@ type Post {
   title: String
   content: String
   thumbnail: String
+  keywords: [String]
   communityId: ID
   isActive: Boolean
   createdAt: Float
@@ -29,6 +31,7 @@ input UpdatePostInput {
   title: String
   content: String
   thumbnail: String
+  keywords: [String]
 }
 type PostRespone {
   _id: ID
@@ -49,5 +52,6 @@ input NewPost {
   title: String
   content: String
   thumbnail: String
+  keywords: [String]
   communityId: ID
 }

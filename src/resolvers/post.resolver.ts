@@ -11,6 +11,7 @@ import { getMongoRepository } from 'typeorm'
 import { PostEntity, UserEntity } from '@entities'
 import { PIPELINE_USER, PIPELINE_COMMUNITY } from '@constants'
 import { UserInputError } from 'apollo-server-express'
+import { query } from 'express'
 
 @Resolver('Post')
 export class PostResolver {
@@ -30,7 +31,7 @@ export class PostResolver {
   async updatePost(
     @Context('currentUser') currentUser: UserEntity,
     @Args('postId') postId: string,
-    @Args('updatePost') updatePost: UpdatePostInput,
+    @Args('updatePost') updatePost: UpdatePostInput
   ) {
     const postRepository = getMongoRepository(PostEntity)
     const postFound = await postRepository.findOne({ _id: postId })
@@ -48,7 +49,10 @@ export class PostResolver {
     return !!updatedPost
   }
   @Mutation()
-  async deletePost(@Context('currentUser') currentUser: UserEntity, @Args('postId') postId: string) {
+  async deletePost(
+    @Context('currentUser') currentUser: UserEntity,
+    @Args('postId') postId: string
+  ) {
     const postFound = await getMongoRepository(PostEntity).findOne({
       _id: postId
     })
@@ -58,13 +62,14 @@ export class PostResolver {
       deletedAt: +new Date(),
       deletedBy: currentUser?._id
     })
-    const deleted = await getMongoRepository(PostEntity).save(
-      deletepostFound
-    )
+    const deleted = await getMongoRepository(PostEntity).save(deletepostFound)
     return !!deleted
   }
   @Query()
-  async posts(@Context('currentUser') currentUser: UserEntity, @Args('quantity') quantity: number) {
+  async posts(
+    @Context('currentUser') currentUser: UserEntity,
+    @Args('quantity') quantity: number
+  ) {
     const results = await getMongoRepository(PostEntity)
       .aggregate([
         {
@@ -76,7 +81,7 @@ export class PostResolver {
           $sort: { createdAt: -1 }
         },
         {
-          $limit: quantity 
+          $limit: quantity
         },
         ...PIPELINE_USER,
         ...PIPELINE_COMMUNITY
@@ -136,6 +141,61 @@ export class PostResolver {
         ...PIPELINE_COMMUNITY
       ])
       .toArray()
+    return results
+  }
+
+  @Mutation()
+  async searchAllPosts(@Args('query') query: string) {
+    const keys = query.split(' ').filter(v => !!v)
+    const posts = await getMongoRepository(PostEntity)
+      .aggregate([
+        {
+          $match: {
+            isActive: true
+          }
+        },
+        {
+          $sort: { createdAt: -1 }
+        },
+        ...PIPELINE_USER,
+        ...PIPELINE_COMMUNITY
+      ])
+      .toArray()
+    const results = posts
+      .map(post => {
+        const { title, content, keywords } = post
+        const convertTitle = title.toLowerCase().split(' ')
+        const titlePoint =
+          keys.filter(key => convertTitle.includes(key)).length * 0.3
+        console.log('PostResolver -> searchAllPosts -> titlePoint', titlePoint)
+        const contentPoint =
+          keys.filter(key => content.toLowerCase().includes(key)).length * 0.3
+        console.log(
+          'PostResolver -> searchAllPosts -> contentPoint',
+          contentPoint
+        )
+        let keywordPoint = 0
+        console.log(
+          'PostResolver -> searchAllPosts -> keywordPoint',
+          keywordPoint
+        )
+        keywords?.map(keyword => {
+          const convertKeyword = keyword.toLowerCase().split(' ')
+          const point =
+            keys.filter(key => convertKeyword.includes(key)).length * 0.4
+          keywordPoint = point > keywordPoint ? point : keywordPoint
+        })
+        const totalPoint = titlePoint + contentPoint + keywordPoint
+        if (totalPoint > 0) {
+          return {
+            post,
+            point: totalPoint
+          }
+        }
+      })
+      .filter(v => !!v)
+      .sort((a, b) => b.point - a.point)
+      .map(v => v.post)
     return results
   }
 }
