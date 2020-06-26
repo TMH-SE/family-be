@@ -124,7 +124,7 @@ export class UserResolver {
         new UserEntity({
           email: userData.email,
           firstname: userData.first_name,
-          lastname: `${userData.last_name} ${userData.middle_name}`,
+          lastname: userData.middle_name ? `${userData.last_name} ${userData.middle_name}` : userData.last_name,
           avatar: userData.picture.data.url
         })
       )
