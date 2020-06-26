@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { PORT, ENDPOINT } from '@environment'
 import chalk = require('chalk')
-import { dbseed } from 'dbseed'
+import { dbseed } from './dbseed'
 
 declare const module: any
 
