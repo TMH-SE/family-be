@@ -22,6 +22,10 @@ export class PostEntity {
 
   @Expose()
   @Column()
+  keywords: string[]
+
+  @Expose()
+  @Column()
   communityId: string
 
   @Expose()
