@@ -124,7 +124,9 @@ export class UserResolver {
         new UserEntity({
           email: userData.email,
           firstname: userData.first_name,
-          lastname: userData.middle_name ? `${userData.last_name} ${userData.middle_name}` : userData.last_name,
+          lastname: userData.middle_name
+            ? `${userData.last_name} ${userData.middle_name}`
+            : userData.last_name,
           avatar: userData.picture.data.url
         })
       )
@@ -263,12 +265,16 @@ export class UserResolver {
   ) {
     const userRepository = getMongoRepository(UserEntity)
     const userFound = await userRepository.findOne({ _id: userId })
-    return userFound
-      ? {
+    if (userFound)
+      userRepository.save(
+        new UserEntity({
           ...userFound,
-          ...userInfor
-        }
-      : null
+          ...userInfor,
+          expert: userFound?.expert?.isVerify && {...userFound.expert}
+
+        })
+      )
+    return !!userFound
   }
 
   @Mutation()
@@ -285,7 +291,25 @@ export class UserResolver {
       )
     return !!userDel
   }
-
+  @Mutation()
+  async verifyOrRejectExpert(
+    @Context('currentUser') currentUser: UserEntity,
+    @Args('userId') userId: string,
+    @Args('isVerify') isVerify: boolean
+  ) {
+    const userRepository = getMongoRepository(UserEntity)
+    const foundUser = await userRepository.findOne({
+      _id: userId,
+      isActive: true
+    })
+    const result = await userRepository.save(
+      new UserEntity({
+        ...foundUser,
+        expert: { ...foundUser.expert, isVerify }
+      })
+    )
+    return !!result
+  }
   @Mutation()
   async createAdmin(
     @Context('currentUser') currentUser: UserEntity,
