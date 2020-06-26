@@ -1,10 +1,10 @@
 import { Entity, ObjectIdColumn, Column } from 'typeorm'
 import { Expose, plainToClass } from 'class-transformer'
 import * as uuid from 'uuid'
-import { Expert } from '@generator'
+import { Expert, User, Gender, Role } from '@generator'
 
 @Entity('users')
-export class UserEntity {
+export class UserEntity extends User {
   @Expose()
   @ObjectIdColumn()
   _id: string
@@ -27,7 +27,7 @@ export class UserEntity {
 
   @Expose()
   @Column()
-  gender: string
+  gender: Gender
 
   @Expose()
   @Column()
@@ -48,6 +48,10 @@ export class UserEntity {
   @Expose()
   @Column()
   expert: Expert
+
+  @Expose()
+  @Column()
+  role: Role
 
   @Expose()
   @Column()
@@ -78,19 +82,20 @@ export class UserEntity {
   isActive: boolean
 
   constructor(user: Partial<UserEntity>) {
-		if (user) {
-			Object.assign(
-				this,
-				plainToClass(UserEntity, user, {
-					excludeExtraneousValues: true
-				})
-			)
-			this._id = this._id || uuid.v1()
-			this.createdAt = +new Date()
+    super()
+    if (user) {
+      Object.assign(
+        this,
+        plainToClass(UserEntity, user, {
+          excludeExtraneousValues: true
+        })
+      )
+      this._id = this._id || uuid.v1()
+      this.createdAt = +new Date()
       this.updatedAt = +new Date()
       this.verified = this.verified === undefined ? false : this.verified
       this.isActive = this.isActive === undefined ? true : this.isActive
-		}
-	}
-
+      this.role = this.role || Role.MEMBER
+    }
+  }
 }

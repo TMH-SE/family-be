@@ -2,6 +2,8 @@ type Query {
   me: User @isAuthenticated
   verifyAccount(verifyToken: String): AuthRespone
   getUser(userId: ID): User
+  admins: [User] @isSuper
+  admin(_id: ID): User @isSuper
 }
 
 type Mutation {
@@ -13,6 +15,9 @@ type Mutation {
   updateUser(userId: ID, editUser: EditUser): Boolean 
   updateUserInfo(userId: ID, userInfo: UserInfo): Boolean 
   deleteUser(userId: ID): Boolean
+  createAdmin(newAdmin: NewAdmin): Boolean
+  updateAdmin(_id: ID, newAdmin: NewAdmin): Boolean
+  deleteAdmins(ids: [ID]): Boolean
 }
 
 type User {
@@ -27,6 +32,7 @@ type User {
   phoneNumber: String
   birthday: Float
   expert: Expert
+  role: Role
   isActive: Boolean
   createdAt: Float
   updatedAt: Float
@@ -39,6 +45,12 @@ enum Gender {
   MALE
   FEMALE
   OTHER
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+  SUPERADMIN
 }
 
 type Expert {
@@ -84,4 +96,14 @@ input NewExpert {
 input FacebookAuthData {
   accessToken: String
   userID: String
+}
+
+input NewAdmin {
+  firstname: String
+  lastname: String
+  email: String
+  password: String
+  phoneNumber: String
+  birthday: Float
+  gender: Gender
 }

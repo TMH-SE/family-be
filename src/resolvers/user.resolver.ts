@@ -14,7 +14,9 @@ import {
   AuthRespone,
   FacebookAuthData,
   EditUser,
-  UserInfo
+  UserInfo,
+  NewAdmin,
+  Role
 } from '@generator'
 import { UserEntity } from '@entities'
 import { PasswordUtils, Mailer } from '@utils'
@@ -227,7 +229,10 @@ export class UserResolver {
   async getUser(@Args('userId') userId: string): Promise<UserEntity> {
     console.log(userId)
     const userRepository = getMongoRepository(UserEntity)
-    const userFound = await userRepository.findOne({ _id: userId, isActive: true })
+    const userFound = await userRepository.findOne({
+      _id: userId,
+      isActive: true
+    })
     return userFound
       ? {
           ...userFound,
@@ -260,14 +265,14 @@ export class UserResolver {
   ) {
     const userRepository = getMongoRepository(UserEntity)
     const userFound = await userRepository.findOne({ _id: userId })
-    if (userFound)
-      userRepository.save(
-        new UserEntity({
+    return userFound
+      ? {
           ...userFound,
           ...userInfor
-        })
-      )
+        }
+      : null
   }
+
   @Mutation()
   async deleteUser(@Args('userId') userId: string) {
     let userDel
@@ -281,5 +286,124 @@ export class UserResolver {
         })
       )
     return !!userDel
+  }
+
+  @Mutation()
+  async createAdmin(
+    @Context('currentUser') currentUser: UserEntity,
+    @Args('newAdmin') newAdmin: NewAdmin
+  ) {
+    const userRepository = getMongoRepository(UserEntity)
+    const foundUser = await userRepository.findOne({ email: newAdmin.email })
+    if (foundUser) {
+      if (foundUser.isActive === false) {
+        throw new ForbiddenError('Email này đã bị khóa')
+      }
+      if (foundUser.role !== Role.ADMIN) {
+        throw new ForbiddenError('Admin này đã tồn tại')
+      }
+      const hashedPassword = await this.passwordUtils.hashPassword(
+        newAdmin.password
+      )
+      const result = await userRepository.save(
+        new UserEntity({
+          ...foundUser,
+          ...newAdmin,
+          password: hashedPassword,
+          role: Role.ADMIN,
+          verified: true,
+          updatedAt: +new Date(),
+          updatedBy: currentUser._id
+        })
+      )
+      return !!result
+    } else {
+      const hashedPassword = await this.passwordUtils.hashPassword(
+        newAdmin.password
+      )
+      const result = await userRepository.save(
+        new UserEntity({
+          ...newAdmin,
+          verified: true,
+          password: hashedPassword,
+          role: Role.ADMIN
+        })
+      )
+      return !!result
+    }
+  }
+
+  @Mutation()
+  async updateAdmin(
+    @Context('currentUser') currentUser: UserEntity,
+    @Args('_id') _id: string,
+    @Args('newAdmin') newAdmin: NewAdmin
+  ) {
+    const userRepository = getMongoRepository(UserEntity)
+    const foundUser = await userRepository.findOne({
+      _id,
+      role: Role.ADMIN,
+      isActive: true
+    })
+    if (!foundUser) {
+      throw new ForbiddenError('Admin không tồn tại')
+    }
+    let hashedPassword = foundUser.password
+    if (newAdmin.password) {
+      hashedPassword = await this.passwordUtils.hashPassword(newAdmin.password)
+    }
+    const result = await userRepository.save(
+      new UserEntity({
+        ...foundUser,
+        ...newAdmin,
+        password: hashedPassword,
+        updatedAt: +new Date(),
+        updatedBy: currentUser._id
+      })
+    )
+    return !!result
+  }
+
+  @Mutation()
+  async deleteAdmins(
+    @Context('currentUser') currentUser: UserEntity,
+    @Args('ids') ids: string[]
+  ) {
+    const userRepository = getMongoRepository(UserEntity)
+    const admins = await userRepository.find({
+      where: {
+        _id: { $in: ids }
+      }
+    })
+    const deleteAdmins = admins.map(
+      admin =>
+        new UserEntity({
+          ...admin,
+          isActive: false,
+          deletedAt: +new Date(),
+          deletedBy: currentUser._id
+        })
+    )
+    const results = await userRepository.save(deleteAdmins)
+    return results.length === deleteAdmins.length
+  }
+
+  @Query()
+  async admins() {
+    const result = await getMongoRepository(UserEntity).find({
+      role: Role.ADMIN,
+      isActive: true
+    })
+    return result
+  }
+
+  @Query()
+  async admin(@Args('_id') _id: string) {
+    const result = await getMongoRepository(UserEntity).findOne({
+      _id,
+      role: Role.ADMIN,
+      isActive: true
+    })
+    return result
   }
 }
