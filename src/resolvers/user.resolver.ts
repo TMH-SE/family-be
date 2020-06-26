@@ -112,7 +112,7 @@ export class UserResolver {
     const userRepository = getMongoRepository(UserEntity)
     const FB_GRAPH_API_URL = `${FB_GRAPH_API_HOST}/${FB_GRAPH_API_VER}`
     const req = await Axios.get(
-      `${FB_GRAPH_API_URL}/${facebookAuthData.userID}?fields=name,first_name,last_name,birthday,email,gender,link,picture&access_token=${facebookAuthData.accessToken}`
+      `${FB_GRAPH_API_URL}/${facebookAuthData.userID}?fields=name,first_name,last_name,middle_name,email,picture&access_token=${facebookAuthData.accessToken}`
     )
     const userData = req.data
     const userFound = await userRepository.findOne({ email: userData.email })
@@ -124,9 +124,7 @@ export class UserResolver {
         new UserEntity({
           email: userData.email,
           firstname: userData.first_name,
-          lastname: userData.last_name,
-          birthday: +new Date(userData.birthday),
-          gender: userData.gender.toUpperCase(),
+          lastname: `${userData.last_name} ${userData.middle_name}`,
           avatar: userData.picture.data.url
         })
       )
