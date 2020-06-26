@@ -112,7 +112,7 @@ export class UserResolver {
     const userRepository = getMongoRepository(UserEntity)
     const FB_GRAPH_API_URL = `${FB_GRAPH_API_HOST}/${FB_GRAPH_API_VER}`
     const req = await Axios.get(
-      `${FB_GRAPH_API_URL}/${facebookAuthData.userID}?fields=name,first_name,last_name,birthday,email,gender,link,picture&access_token=${facebookAuthData.accessToken}`
+      `${FB_GRAPH_API_URL}/${facebookAuthData.userID}?fields=name,first_name,last_name,middle_name,email,picture&access_token=${facebookAuthData.accessToken}`
     )
     const userData = req.data
     const userFound = await userRepository.findOne({ email: userData.email })
@@ -124,9 +124,7 @@ export class UserResolver {
         new UserEntity({
           email: userData.email,
           firstname: userData.first_name,
-          lastname: userData.last_name,
-          birthday: +new Date(userData.birthday),
-          gender: userData.gender.toUpperCase(),
+          lastname: `${userData.last_name} ${userData.middle_name}`,
           avatar: userData.picture.data.url
         })
       )
@@ -229,7 +227,10 @@ export class UserResolver {
   async getUser(@Args('userId') userId: string): Promise<UserEntity> {
     console.log(userId)
     const userRepository = getMongoRepository(UserEntity)
-    const userFound = await userRepository.findOne({ _id: userId })
+    const userFound = await userRepository.findOne({
+      _id: userId,
+      isActive: true
+    })
     return userFound
       ? {
           ...userFound,
@@ -262,13 +263,27 @@ export class UserResolver {
   ) {
     const userRepository = getMongoRepository(UserEntity)
     const userFound = await userRepository.findOne({ _id: userId })
-    if (userFound)
-      userRepository.save(
-        new UserEntity({
+    return userFound
+      ? {
           ...userFound,
           ...userInfor
+        }
+      : null
+  }
+
+  @Mutation()
+  async deleteUser(@Args('userId') userId: string) {
+    let userDel
+    const userRepository = getMongoRepository(UserEntity)
+    const userFound = await userRepository.findOne({ _id: userId })
+    if (userFound)
+      userDel = userRepository.save(
+        new UserEntity({
+          ...userFound,
+          isActive: false
         })
       )
+    return !!userDel
   }
 
   @Mutation()
@@ -333,9 +348,7 @@ export class UserResolver {
     }
     let hashedPassword = foundUser.password
     if (newAdmin.password) {
-      hashedPassword = await this.passwordUtils.hashPassword(
-        newAdmin.password
-      )
+      hashedPassword = await this.passwordUtils.hashPassword(newAdmin.password)
     }
     const result = await userRepository.save(
       new UserEntity({
