@@ -4,7 +4,7 @@ type Query {
 }
 
 type Mutation {
-  createCommunity(newCommunity: NewCommunity): Boolean
+  createCommunity(newCommunity: NewCommunity): String
   updateCommunity(_id: ID!, newCommunity: NewCommunity): Boolean
   deleteCommunities(ids: [ID]): Boolean
 }
