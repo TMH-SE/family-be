@@ -9,34 +9,36 @@ import { PIPELINE_USER } from '@constants'
 @Resolver('Follower')
 export class FollowerResolver {
   @Query()
-  async getFollowerByUser(@Args('userId') userId: string): Promise<FollowerRespone[]> {
+  async getFollowerByUser(
+    @Args('userId') userId: string
+  ): Promise<FollowerRespone[]> {
     const results = await getMongoRepository(FollowerEntity)
-    .aggregate([
-      {
-        $match: {
-          userId
+      .aggregate([
+        {
+          $match: {
+            userId
+          }
+        },
+        {
+          $sort: { createdAt: -1 }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'followerId',
+            foreignField: '_id',
+            as: 'follower'
+          }
+        },
+        {
+          $unwind: {
+            path: '$follower',
+            preserveNullAndEmptyArrays: true
+          }
         }
-      },
-      {
-        $sort: { createdAt: -1 }
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'followerId',
-          foreignField: '_id',
-          as: 'follower'
-        }
-      },
-      {
-        $unwind: {
-          path: '$follower',
-          preserveNullAndEmptyArrays: true
-        }
-      }
-    ])
-    .toArray()
-   
+      ])
+      .toArray()
+
     return results
   }
 

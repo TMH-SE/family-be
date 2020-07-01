@@ -59,7 +59,7 @@ export class CommunityResolver {
     const createdCommunity = await communityRepository.save(
       new CommunityEntity({ ...newCommunity, createdBy: currentUser._id })
     )
-    return !!createdCommunity
+    return createdCommunity?._id
   }
 
   @Mutation()
