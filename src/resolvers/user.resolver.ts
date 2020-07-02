@@ -270,10 +270,11 @@ export class UserResolver {
         new UserEntity({
           ...userFound,
           ...userInfor,
-          expert: userFound?.expert?.isVerify && {...userFound.expert}
+          expert: userFound?.expert?.isVerify ? {...userFound.expert} : {...userInfor.expert}
 
         })
       )
+      console.log(userFound)
     return !!userFound
   }
 
