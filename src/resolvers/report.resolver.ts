@@ -35,10 +35,7 @@ const handleData = (raw: any, type: string) => {
       type
     }
   }
-  return Object.values(updateData).map(data => ({
-    ...data,
-    date: `${data.date.day}/${data.date.month}/${data.date.year}`
-  }))
+  return Object.values(updateData).map((data: any) => ({...data, date: `${data.date.day}/${data.date.month}/${data.date.year}`}))
 }
 
 const firebaseConfig = {
