@@ -19,6 +19,10 @@ async function bootstrap() {
     module.hot.dispose(() => app.close())
   }
 
-  console.log(`------- Server start at: ${chalk.greenBright(`${PORT}/${ENDPOINT}`)} -------`)
+  console.log(
+    `------- Server start at: ${chalk.greenBright(
+      `${PORT}/${ENDPOINT}`
+    )} -------`
+  )
 }
 bootstrap()
