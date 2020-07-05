@@ -3,6 +3,7 @@ import { getMongoRepository } from 'typeorm'
 import { SeminarEntity, UserEntity } from '@entities'
 import { PIPELINE_USER } from '@constants'
 import { NewSeminar } from '@generator'
+import { ForbiddenError } from 'apollo-server-express'
 
 @Resolver()
 export class SeminarResolver {
@@ -49,5 +50,38 @@ export class SeminarResolver {
       new SeminarEntity({ ...newSeminar, createdBy: currentUser._id })
     )
     return !!createdSeminar
+  }
+
+  @Mutation()
+  async updateSeminar(
+    @Context('currentUser') currentUser: UserEntity,
+    @Args('_id') _id: string,
+    @Args('newSeminar') newSeminar: NewSeminar
+  ) {
+    const repository = getMongoRepository(SeminarEntity)
+    const seminarFound = await repository.findOne({ _id })
+    if (!seminarFound) {
+      throw new ForbiddenError('Không tìm thấy hội thảo')
+    }
+    const updatedSeminar = await repository.save(
+      new SeminarEntity({ ...seminarFound, ...newSeminar, updatedAt: +new Date(), updatedBy: currentUser._id })
+    )
+    return !!updatedSeminar
+  }
+
+  @Mutation()
+  async deleteSeminar(
+    @Context('currentUser') currentUser: UserEntity,
+    @Args('_id') _id: string
+  ) {
+    const repository = getMongoRepository(SeminarEntity)
+    const seminarFound = await repository.findOne({ _id })
+    if (!seminarFound) {
+      throw new ForbiddenError('Không tìm thấy hội thảo')
+    }
+    const deletedSeminar = await repository.save(
+      new SeminarEntity({ ...seminarFound, isActive: false, deletedAt: +new Date(), deletedBy: currentUser._id })
+    )
+    return !!deletedSeminar
   }
 }
