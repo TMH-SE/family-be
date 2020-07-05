@@ -3,6 +3,7 @@ import { AppModule } from './app.module'
 import { PORT, ENDPOINT } from '@environment'
 import chalk = require('chalk')
 import { dbseed } from './dbseed'
+import { CronTasks } from '@utils'
 
 declare const module: any
 
@@ -13,6 +14,9 @@ async function bootstrap() {
   app.enableCors({ origin: '*' })
 
   dbseed()
+
+  const tasks = new CronTasks()
+  tasks.refreshTask()
 
   if (module.hot) {
     module.hot.accept()
