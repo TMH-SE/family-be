@@ -5,6 +5,8 @@ type Query {
 
 type Mutation {
   createSeminar(newSeminar: NewSeminar): Boolean
+  updateSeminar(_id: ID, newSeminar: NewSeminar): Boolean
+  deleteSeminar(_id: ID): Boolean
 }
 
 type Seminar {
