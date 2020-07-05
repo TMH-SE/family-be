@@ -22,7 +22,7 @@ const handleData = (raw: any, type: string) => {
       24
   )
   const updateData = {}
-  for (let i = 7; i > 0; i--) {
+  for (let i = 13; i >= 0; i--) {
     const date = new Date(new Date().setDate(new Date().getDate() - i))
     updateData[dayOfYear - i] = raw[dayOfYear - i] || {
       _id: dayOfYear - i,
@@ -35,7 +35,10 @@ const handleData = (raw: any, type: string) => {
       type
     }
   }
-  return Object.values(updateData).map((data: any) => ({...data, date: `${data.date.day}/${data.date.month}/${data.date.year}`}))
+  return Object.values(updateData).map((data: any) => ({
+    ...data,
+    date: `${data.date.day}/${data.date.month}/${data.date.year}`
+  }))
 }
 
 const firebaseConfig = {
@@ -57,7 +60,7 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID || 'G-MPT0K7B144'
 }
 
-@Resolver()
+@Resolver('Report')
 export class ReportResolver {
   @Mutation()
   async refreshDataReport() {
@@ -73,7 +76,7 @@ export class ReportResolver {
                   $gte: [
                     '$createdAt',
                     new Date(
-                      new Date().setDate(new Date().getDate() - 7)
+                      new Date().setDate(new Date().getDate() - 14)
                     ).setHours(0, 0, 0, 0)
                   ]
                 }
@@ -121,7 +124,7 @@ export class ReportResolver {
                   $gte: [
                     '$createdAt',
                     new Date(
-                      new Date().setDate(new Date().getDate() - 7)
+                      new Date().setDate(new Date().getDate() - 14)
                     ).setHours(0, 0, 0, 0)
                   ]
                 }
@@ -169,7 +172,7 @@ export class ReportResolver {
                   $gte: [
                     '$createdAt',
                     new Date(
-                      new Date().setDate(new Date().getDate() - 7)
+                      new Date().setDate(new Date().getDate() - 14)
                     ).setHours(0, 0, 0, 0)
                   ]
                 }
@@ -211,11 +214,13 @@ export class ReportResolver {
       groupBy(resultSeminars, '_id'),
       'seminar'
     )
-    const app = firebase.initializeApp(firebaseConfig)
+    if (firebase.apps.length === 0) {
+      firebase.initializeApp(firebaseConfig)
+    }
     firebase
-      .database(app)
-      .ref(`report/lastDays`)
-      .set(dataUserHandled.concat(dataPostHandled).concat(dataSeminarHandled))
+      .database()
+      .ref(`report`)
+      .set({lastDays: dataUserHandled.concat(dataPostHandled).concat(dataSeminarHandled), updatedAt: +new Date()})
 
     return true
   }
