@@ -271,7 +271,6 @@ export class UserResolver {
           ...userFound,
           ...userInfor,
           expert: userFound?.expert?.isVerify ? {...userFound.expert} : {...userInfor.expert}
-
         })
       )
     return !!userFound

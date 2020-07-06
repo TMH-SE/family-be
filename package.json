@@ -35,6 +35,8 @@
     "bcrypt": "^4.0.1",
     "class-transformer": "^0.2.3",
     "cloudinary": "^1.21.0",
+    "cron": "^1.8.2",
+    "firebase": "^7.15.5",
     "google-auth-library": "^6.0.0",
     "graphql": "^15.0.0",
     "graphql-subscriptions": "^1.1.0",

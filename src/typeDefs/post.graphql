@@ -38,6 +38,7 @@ type PostRespone {
   title: String
   content: String
   thumbnail: String
+  keywords: [String]
   community: Community
   isActive: Boolean
   createdAt: Float
