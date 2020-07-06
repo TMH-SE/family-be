@@ -274,7 +274,6 @@ export class UserResolver {
 
         })
       )
-      console.log(userFound)
     return !!userFound
   }
 
@@ -303,6 +302,7 @@ export class UserResolver {
       _id: userId,
       isActive: true
     })
+    console.log( { ...foundUser.expert, isVerify }, 'expert')
     const result = await userRepository.save(
       new UserEntity({
         ...foundUser,
