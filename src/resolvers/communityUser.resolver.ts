@@ -15,22 +15,23 @@ export class CommunityUserResolver {
           communityId: communityId
         }
       },
-      ...PIPELINE_USER,
-      ...PIPELINE_COMMUNITY
-    ]).toArray()
-    return communityUserFound ? communityUserFound.length : 0
-  }
-  async getMembersByCommu(@Args('communityId') communityId: string) {
-    const communityUserFound = await getMongoRepository(CommunityUserEntity).aggregate([
       {
-        $match: {
-          communityId: communityId
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user'
         }
       },
-      ...PIPELINE_USER,
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true
+        }
+      },
       ...PIPELINE_COMMUNITY
     ]).toArray()
-    return communityUserFound ? communityUserFound.length : 0
+    return communityUserFound
   }
   @Query()
   async getCommunitiesByUser(@Args('userId') userId: string) {

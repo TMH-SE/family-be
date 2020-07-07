@@ -14,20 +14,7 @@ export class CommunityResolver {
     const results = await getMongoRepository(CommunityEntity)
       .aggregate([{ $match: { isActive: true } }, ...PIPELINE_USER])
       .toArray()
-    const asyncRes = await Promise.all(
-      results.map(async i => {
-        return {
-          ...i,
-          countMember: await new CommunityUserResolver().getMembersByCommu(
-            i._id
-          ),
-          countPost: (await new PostResolver().postsByCommunity(i._id))
-          ? (await new PostResolver().postsByCommunity(i._id)).length
-          : 0
-        }
-      })
-    )
-    return asyncRes
+    return results
   }
 
   @Query()
@@ -35,13 +22,7 @@ export class CommunityResolver {
     const results = await getMongoRepository(CommunityEntity)
       .aggregate([{ $match: { isActive: true, _id: id } }, ...PIPELINE_USER])
       .toArray()
-    return {
-      ...results[0],
-      countMember: await new CommunityUserResolver().getMembersByCommu(id),
-      countPost: (await new PostResolver().postsByCommunity(id))
-        ? (await new PostResolver().postsByCommunity(id)).length
-        : 0
-    }
+    return results[0]
   }
 
   @Mutation()
