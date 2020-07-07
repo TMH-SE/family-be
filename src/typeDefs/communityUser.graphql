@@ -1,5 +1,5 @@
 type Query {
-    getMembersByCommunity(communityId: String): Float
+    getMembersByCommunity(communityId: String): [CommunityUserResponse]
     checkIsMember(id: CommunityUserInput): Boolean
     getCommunitiesByUser(userId: String): [CommunityUserResponse]
 }
@@ -11,6 +11,7 @@ type Mutation {
 type CommunityUserResponse{
     _id: CommunityUserId
     community: CommunityRespone
+    user: User
 }
 input CommunityUserInput {
     userId: String
