@@ -1,40 +1,50 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+  <img src="src/assets/images/logo.png" width="320" alt="Logo" />
 </p>
 
-[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
-[travis-url]: https://travis-ci.org/nestjs/nest
-[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
-[linux-url]: https://travis-ci.org/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/dm/@nestjs/core.svg" alt="NPM Downloads" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://api.travis-ci.org/nestjs/nest.svg?branch=master" alt="Travis" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://img.shields.io/travis/nestjs/nest/master.svg?label=linux" alt="Linux" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#5" alt="Coverage" /></a>
-<a href="https://gitter.im/nestjs/nestjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"><img src="https://badges.gitter.im/nestjs/nestjs.svg" alt="Gitter" /></a>
-<a href="https://opencollective.com/nest#backer"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
-  <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 1. Preparation
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+### 1.1 Create file .env
 
 ```bash
-$ npm install
+# follow the file .env.example
+NODE_ENV=<development|production >
+PORT=<PORT_START>
+MONGODB_URL=<YOUR_MONGODB_URL>
+FB_APP_ID=<YOUR_FACEBOOK_APP_ID>
+FB_APP_SECRET=<YOUR_FACEBOOK_APP_SECRECT_KEY>
+GOOGLE_CLIENT_ID=<YOUR_GOOGLE_CLIENT_ID>
+GMAIL_USERNAME=<YOUR_EMAIL_ADDRESS>
+GMAIL_PASSWORD=<YOUR_EMAIL_PASSWORD>
+FIREBASE_API_KEY=<YOUR_FIREBASE_API_KEY>
+FIREBASE_AUTH_DOMAIN=<YOUR_FIREBASE_AUTH_DOMAIN>
+FIREBASE_DATABASE_URL=<YOUR_FIREBASE_DATABASE_URL>
+FIREBASE_PROJECT_ID=<YOUR_FIREBASE_PROJECT_ID>
+FIREBASE_STORAGE_BUCKET=<YOUR_FIREBASE_STORAGE_BUCKET>
+FIREBASE_MESSAGING_SENDER_ID=<YOUR_FIREBASE_MESSAGING_SENDER_ID>
+FIREBASE_APP_ID=<YOUR_FIREBASE_APP_ID>
+FIREBASE_MEASUREMENT_ID=<YOUR_FIREBASE_MEASUREMENT_ID>
+JWT_SECRECT_KEY=<YOUR_JWT_SECRET_KEY>
+JWT_VERIFY_EMAIL_SECRECT_KEY=<YOUR_JWT_VERIFY_EMAIL_SECRECT_KEY>
 ```
 
-## Running the app
+### 1.2 Install package
+
+```bash
+# using npm
+$ npm i
+
+# using yarn
+$ yarn add
+```
+
+### 1.3 Run generate schema graphql
+
+```bash
+$ npm run generate
+```
+
+## 2. Running the app
 
 ```bash
 # development
@@ -44,32 +54,52 @@ $ npm run start
 $ npm run start:dev
 
 # production mode
-$ npm run start:prod
+  #1. build app
+  $ npm run build
+  #2. start app
+  $ npm run start:prod
+
+# Running the app with webpack (Hot-Module Replacement)
+$ npm run start:hmr
 ```
 
-## Test
+## 3. Git policy
+
+### 3.1 Branch
 
 ```bash
-# unit tests
-$ npm run test
+  # create branch before perform your task
+  # naming branch follow the pattern: yourName_yourTask
+  # e.g: hieu_khachHang
+  $ git branch <your_branch>
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+  # check out your branch before start code
+  $ git checkout <your_branch>
 ```
 
-## Support
+### 3.2 Commit code
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+  # save your changes
+  $ git add .
 
-## Stay in touch
+  # commit code
+  # your comment must be concise and describe what you did
+  $ git commit -m 'your comment'
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 3.3 Pull code
 
-## License
+```bash
+  # always pull code before whenever start coding or push code to repository
+  $ git pull origin master
+```
 
-  Nest is [MIT licensed](LICENSE).
+### 3.4 Push code
+
+```bash
+  # push code from local to repository
+  $ git push origin <your_branch>
+```
+
+\*_*NOTE:*_ Before push code, you must pull code from "test" branch and fix conflict
