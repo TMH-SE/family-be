@@ -2,7 +2,7 @@ import { Resolver, Mutation } from '@nestjs/graphql'
 import { getMongoRepository } from 'typeorm'
 import { UserEntity, PostEntity, SeminarEntity } from '@entities'
 import { Role } from '@generator'
-import * as firebase from 'firebase/app'
+import * as firebase from 'firebase'
 
 const groupBy = (array: any[], key: string) =>
   array.reduce(
